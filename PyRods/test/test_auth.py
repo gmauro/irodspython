@@ -25,54 +25,29 @@ from irods import *
 class testAuth(iRODSTestCase):
 
     def test_authCheckInp_t(self):
-        tmp = create_authCheckInp_t("challenge", "response", "username")
-        self.assertEqual(tmp.challenge, "challenge")
-        self.assertEqual(tmp.response, "response")
-        self.assertEqual(tmp.username, "username")
+        v1 = create_authCheckInp_t()
+        v2 = create_authCheckInp_t()
+        self.assertTrue(test_authCheckInp_t(v1, v2))
  
     def test_authCheckOut_t(self):
-        tmp = create_authCheckOut_t(12, 12, "serverResponse")
-        self.assertEqual(tmp.clientPrivLevel, 12)
-        self.assertEqual(tmp.privLevel, 12)
-        self.assertEqual(tmp.serverResponse, "serverResponse")
- 
+        v1 = create_authCheckOut_t()
+        v2 = create_authCheckOut_t()
+        self.assertTrue(test_authCheckOut_t(v1, v2))
+  
     def test_authResponseInp_t(self):
-        tmp = create_authResponseInp_t("response", "username")
-        self.assertEqual(tmp.response, "response")
-        self.assertEqual(tmp.username, "username")
-         
+        v1 = create_authResponseInp_t()
+        v2 = create_authResponseInp_t()
+        self.assertTrue(test_authResponseInp_t(v1, v2))
+          
     def test_authRequestOut_t(self):
-        tmp = create_authRequestOut_t("challenge")
-        self.assertEqual(tmp.challenge, "challenge")
- 
+        v1 = create_authRequestOut_t()
+        v2 = create_authRequestOut_t()
+        self.assertTrue(test_authRequestOut_t(v1, v2))
+  
     def test_gsiAuthRequestOut_t(self):
-        tmp = create_gsiAuthRequestOut_t("serverDN")
-        self.assertEqual(tmp.serverDN, "serverDN")
- 
-    def test_authCheckInp_t_unicode(self):
-        tmp = create_authCheckInp_t(u"challenge", u"response", u"username")
-        self.assertEqual(tmp.challenge, u"challenge")
-        self.assertEqual(tmp.response, u"response")
-        self.assertEqual(tmp.username, u"username")
- 
-    def test_authCheckOut_t_unicode(self):
-        tmp = create_authCheckOut_t(12, 12, u"serverResponse")
-        self.assertEqual(tmp.clientPrivLevel, 12)
-        self.assertEqual(tmp.privLevel, 12)
-        self.assertEqual(tmp.serverResponse, u"serverResponse")
- 
-    def test_authResponseInp_t_unicode(self):
-        tmp = create_authResponseInp_t(u"response", u"username")
-        self.assertEqual(tmp.response, u"response")
-        self.assertEqual(tmp.username, u"username")
-         
-    def test_authRequestOut_t_unicode(self):
-        tmp = create_authRequestOut_t(u"challenge")
-        self.assertEqual(tmp.challenge, u"challenge")
- 
-    def test_gsiAuthRequestOut_t_unicode(self):
-        tmp = create_gsiAuthRequestOut_t(u"serverDN")
-        self.assertEqual(tmp.serverDN, u"serverDN")
+        v1 = create_gsiAuthRequestOut_t()
+        v2 = create_gsiAuthRequestOut_t()
+        self.assertTrue(test_gsiAuthRequestOut_t(v1, v2))
          
 
 def suite():

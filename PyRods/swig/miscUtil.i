@@ -17,10 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "miscUtil.h"
-%}
-
 typedef struct CollEnt {
     objType_t objType;
     int replNum;
@@ -40,12 +36,37 @@ typedef struct CollEnt {
     specColl_t specColl; 
 } collEnt_t;
 
+%extend CollEnt {
+
+    ~CollEnt() {
+        if ($self != NULL) {
+            free($self->collName);
+            free($self->dataName);
+            free($self->dataId);
+            free($self->createTime);
+            free($self->modifyTime);
+            free($self->chksum);
+            free($self->resource);
+            free($self->rescGrp);
+            free($self->phyPath);
+            free($self->ownerName);
+            free($self);
+        }
+    }
+
+};
+
 typedef enum {
     COLL_CLOSED,
     COLL_OPENED,
     COLL_DATA_OBJ_QUERIED,
     COLL_COLL_OBJ_QUERIED
 } collState_t;
+
+typedef enum {
+    RC_COMM,
+    RS_COMM
+} connType_t;
 
 typedef struct CollHandle {
     collState_t state;
@@ -62,6 +83,22 @@ typedef struct CollHandle {
     char prevdataId[NAME_LEN];
 } collHandle_t;
 
+%extend CollHandle {
+
+    ~CollHandle() {
+        if ($self != NULL) {
+            delete_rodsObjStat($self->rodsObjStat);
+            clear_QueryHandle(&$self->queryHandle);
+            clear_GenQueryInp(&$self->genQueryInp);
+            clear_DataObjInp(&$self->dataObjInp);
+            clear_DataObjSqlResult(&$self->dataObjSqlResult);
+            clear_CollSqlResult(&$self->collSqlResult);
+            free($self);
+        }
+    }
+
+};
+
 typedef struct CollSqlResult {
     int rowCnt;
     int attriCnt;
@@ -75,6 +112,34 @@ typedef struct CollSqlResult {
     sqlResult_t collCreateTime;
     sqlResult_t collModifyTime;
 } collSqlResult_t;
+
+%extend CollSqlResult {
+    ~CollSqlResult() {
+        if ($self) {
+            clear_SqlResult(&$self->collName);
+            clear_SqlResult(&$self->collType);
+            clear_SqlResult(&$self->collInfo1);
+            clear_SqlResult(&$self->collInfo2);
+            clear_SqlResult(&$self->collOwner);
+            clear_SqlResult(&$self->collCreateTime);
+            clear_SqlResult(&$self->collModifyTime);
+            free($self);
+       }
+   }
+};
+%{
+void clear_CollSqlResult(collSqlResult_t * collSqlResult) {
+    if (collSqlResult) {
+            clear_SqlResult(&collSqlResult->collName);
+            clear_SqlResult(&collSqlResult->collType);
+            clear_SqlResult(&collSqlResult->collInfo1);
+            clear_SqlResult(&collSqlResult->collInfo2);
+            clear_SqlResult(&collSqlResult->collOwner);
+            clear_SqlResult(&collSqlResult->collCreateTime);
+            clear_SqlResult(&collSqlResult->collModifyTime);
+        }
+}
+%}
 
 typedef struct DataObjSqlResult {
     int rowCnt;
@@ -98,12 +163,89 @@ typedef struct DataObjSqlResult {
     sqlResult_t dataType;
 } dataObjSqlResult_t;
 
+%extend DataObjSqlResult {
+    ~DataObjSqlResult() {
+        if ($self) {
+            clear_SqlResult(&$self->collName);
+            clear_SqlResult(&$self->dataName);
+            clear_SqlResult(&$self->dataMode);
+            clear_SqlResult(&$self->dataSize);
+            clear_SqlResult(&$self->createTime);
+            clear_SqlResult(&$self->modifyTime);
+            clear_SqlResult(&$self->chksum);
+            clear_SqlResult(&$self->replStatus);
+            clear_SqlResult(&$self->dataId);
+            clear_SqlResult(&$self->resource);
+            clear_SqlResult(&$self->phyPath);
+            clear_SqlResult(&$self->ownerName);
+            clear_SqlResult(&$self->replNum);
+            clear_SqlResult(&$self->rescGrp);
+            clear_SqlResult(&$self->dataType);
+            free($self);
+       }
+   }
+};
+
+%{
+void clear_DataObjSqlResult(dataObjSqlResult_t * dataObjSqlResult) {
+    if (dataObjSqlResult) {
+            clear_SqlResult(&dataObjSqlResult->collName);
+            clear_SqlResult(&dataObjSqlResult->dataName);
+            clear_SqlResult(&dataObjSqlResult->dataMode);
+            clear_SqlResult(&dataObjSqlResult->dataSize);
+            clear_SqlResult(&dataObjSqlResult->createTime);
+            clear_SqlResult(&dataObjSqlResult->modifyTime);
+            clear_SqlResult(&dataObjSqlResult->chksum);
+            clear_SqlResult(&dataObjSqlResult->replStatus);
+            clear_SqlResult(&dataObjSqlResult->dataId);
+            clear_SqlResult(&dataObjSqlResult->resource);
+            clear_SqlResult(&dataObjSqlResult->phyPath);
+            clear_SqlResult(&dataObjSqlResult->ownerName);
+            clear_SqlResult(&dataObjSqlResult->replNum);
+            clear_SqlResult(&dataObjSqlResult->rescGrp);
+            clear_SqlResult(&dataObjSqlResult->dataType);
+        }
+}
+%}
+
 typedef struct QueryHandle {
     void *conn;
     connType_t connType;
     funcPtr querySpecColl;
     funcPtr genQuery;
 } queryHandle_t;
+
+%extend QueryHandle {
+
+    ~QueryHandle() {
+        if ($self) {
+            if ($self->connType == RC_COMM) {
+                delete_rcComm_t((rcComm_t*)$self->conn);
+            } /*else {
+                free($self->conn);
+            }*/
+            free($self);
+        }
+    }
+
+    rcComm_t * get_rcComm() {
+        return (rcComm_t *)$self->conn;
+    }
+
+};
+
+%{
+void clear_QueryHandle(queryHandle_t * queryHandle) {
+    if (queryHandle) {
+            if (queryHandle->connType == RC_COMM) {
+                delete_rcComm_t((rcComm_t*)queryHandle->conn);
+            } /*else {
+                free(queryHandle->conn);
+            }*/
+        }
+}
+%}
+
 
 /*****************************************************************************/
 
@@ -221,11 +363,21 @@ int rclInitQueryHandle(queryHandle_t *queryHandle, rcComm_t *conn);
 int rclOpenCollection (rcComm_t *conn, char *collection, 
 int flag, collHandle_t *collHandle);
 
-%pythoncode %{
-def rclOpenCollection(conn, collection, flag):
-    collHandle = collHandle_t()
-    status = _irods.rclOpenCollection(conn, collection, flag, collHandle)
-    return (status, collHandle)
+%inline %{
+
+PyObject * rclOpenCollection(rcComm_t *conn, char *collection, 
+                                int flag) {
+    collHandle_t * collHandle = (collHandle_t*) malloc(sizeof(collHandle_t));
+    memset(collHandle, 0, sizeof(collHandle_t));
+    int status;
+    
+    status = rclOpenCollection(conn, collection, flag, collHandle);
+    return Py_BuildValue("(iO)", 
+                         status, 
+                         SWIG_NewPointerObj(SWIG_as_voidptr(collHandle), 
+                                            SWIGTYPE_p_CollHandle, 0 |  0 ));
+}
+
 %}
 
 /*****************************************************************************/

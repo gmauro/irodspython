@@ -24,23 +24,19 @@ from irods import *
 class testRcConnect(iRODSTestCase):
 
     def test_rcComm_t(self):
-        proxyUser = userInfo_t()
-        clientUser = userInfo_t()
-        svrVersion = version_t()
-        tmp = create_rcComm_t("host", 12, 12, 12, proxyUser, clientUser, 
-                              svrVersion, 12, 12, 12, 12, 12)
-        self.assertEqual(tmp.host, "host")
-        self.assertEqual(tmp.sock, 12)
-        self.assertEqual(tmp.portNum, 12)
-        self.assertEqual(tmp.loggedIn, 12)
-        #self.assertEqual(tmp.proxyUser, proxyUser)
-        #self.assertEqual(tmp.clientUser, clientUser)
-        #self.assertEqual(tmp.svrVersion, svrVersion)
-        self.assertEqual(tmp.flag, 12)
-        self.assertEqual(tmp.apiInx, 12)
-        self.assertEqual(tmp.status, 12)
-        self.assertEqual(tmp.windowSize, 12)
-        self.assertEqual(tmp.reconnectedSock, 12)
+        v1 = create_rcComm_t()
+        v2 = create_rcComm_t()
+        self.assertTrue(test_rcComm_t(v1, v2))
+
+    def test_fileRestartInfo_t(self):
+        v1 = create_fileRestartInfo_t()
+        v2 = create_fileRestartInfo_t()
+        self.assertTrue(test_fileRestartInfo_t(v1, v2))
+
+    def test_fileRestart_t(self):
+        v1 = create_fileRestart_t()
+        v2 = create_fileRestart_t()
+        self.assertTrue(test_fileRestart_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

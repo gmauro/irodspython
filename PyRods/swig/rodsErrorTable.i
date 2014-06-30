@@ -17,9 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "rodsErrorTable.h"
-%}
 
 #define SYS_SOCK_OPEN_ERR		-1000
 #define SYS_SOCK_BIND_ERR		-2000

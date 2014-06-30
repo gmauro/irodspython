@@ -24,24 +24,10 @@ from irods import *
 class testChkObjPermAndStat(iRODSTestCase):
 
     def test_chkObjPermAndStat_t(self):
-        condInput = keyValPair_t()
-        tmp = create_chkObjPermAndStat_t("objPath", "permission", 12, 12, 
-                                         condInput)
-        self.assertEqual(tmp.objPath, "objPath")
-        self.assertEqual(tmp.permission, "permission")
-        self.assertEqual(tmp.flags, 12)
-        self.assertEqual(tmp.status, 12)
-        #self.assertEqual(tmp.condInput, condInput)
+        v1 = create_chkObjPermAndStat_t()
+        v2 = create_chkObjPermAndStat_t()
+        self.assertTrue(test_chkObjPermAndStat_t(v1, v2))
 
-    def test_chkObjPermAndStat_t_unicode(self):
-        condInput = keyValPair_t()
-        tmp = create_chkObjPermAndStat_t(u"objPath", u"permission", 12, 12, 
-                                         condInput)
-        self.assertEqual(tmp.objPath, u"objPath")
-        self.assertEqual(tmp.permission, u"permission")
-        self.assertEqual(tmp.flags, 12)
-        self.assertEqual(tmp.status, 12)
-        #self.assertEqual(tmp.condInput, condInput)
 
 def suite():
     suite = unittest.TestSuite()

@@ -17,12 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "getRemoteZoneResc.h"
-#include "getTempPassword.h"
-#include "rmColl.h"
-%}
-
 /*****************************************************************************/
 
 int addInxIval (inxIvalPair_t *inxIvalPair, int inx, int value);
@@ -49,10 +43,10 @@ keyValPair_t *condInput, int deleteFlag);
 /*****************************************************************************/
 
 %inline %{
-char * getLocalTimeFromRodsTime(char *timeStrIn) {
-    char * localTime = (char *) malloc(TIME_LEN);
+PyObject * getLocalTimeFromRodsTime(char *timeStrIn) {
+    char localTime[TIME_LEN];
     getLocalTimeFromRodsTime(timeStrIn, localTime);
-    return localTime;
+    return Py_BuildValue("s", localTime);
 }
 %}
 
@@ -64,10 +58,10 @@ char *logSubPath, char *phySubPathOut);
 /*****************************************************************************/
 
 %inline %{
-char * getSpecCollTypeStr (specColl_t *specColl) {
+PyObject * getSpecCollTypeStr (specColl_t *specColl) {
     char * typeStr = (char *) malloc(NAME_LEN);
     getSpecCollTypeStr(specColl, typeStr);
-    return typeStr;
+    return Py_BuildValue("s", typeStr);
 }
 %}
 
@@ -125,10 +119,13 @@ rodsHostAddr_t * rcGetRemoteZoneResc(rcComm_t *conn, dataObjInp_t *dataObjInp) {
 /*****************************************************************************/
 
 %inline %{
-char * rcGetTempPassword(rcComm_t *conn) {
+PyObject * rcGetTempPassword(rcComm_t *conn) {
     getTempPasswordOut_t *getTempPasswordOut = NULL;
     rcGetTempPassword(conn, &getTempPasswordOut);
-    return getTempPasswordOut->stringToHashWith;
+    PyObject * ret = Py_BuildValue("s", getTempPasswordOut->stringToHashWith);
+    if (getTempPasswordOut)
+        free(getTempPasswordOut);
+    return ret;
 }
 %}
 

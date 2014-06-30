@@ -24,52 +24,29 @@ from irods import *
 class testRodsStructFile(iRODSTestCase):
 
     def test_structFileExtAndRegInp_t(self):
-        condInput = keyValPair_t()
-        tmp = create_structFileExtAndRegInp_t("objPath", "collection", 12, 12, 
-                                              condInput)
-        self.assertEqual(tmp.objPath, "objPath")
-        self.assertEqual(tmp.collection, "collection")
-        self.assertEqual(tmp.oprType, 12)
-        self.assertEqual(tmp.flags, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 = create_structFileExtAndRegInp_t()
+        v2 = create_structFileExtAndRegInp_t()
+        self.assertTrue(test_structFileExtAndRegInp_t(v1, v2))
+ 
     def test_structFileOprInp_t(self):
-        addr = rodsHostAddr_t()
-        specColl = specColl_t()
-        condInput = keyValPair_t()
-        tmp = create_structFileOprInp_t(addr, 12, 12, specColl, condInput)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.oprType, 12)
-        self.assertEqual(tmp.flags, 12)
-        #self.assertEqual(tmp.specColl, specColl)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 = create_structFileOprInp_t()
+        v2 = create_structFileOprInp_t()
+        self.assertTrue(test_structFileOprInp_t(v1, v2))
+ 
     def test_subStructFileFdOprInp_t(self):
-        addr = rodsHostAddr_t()
-        #type = structFileType_t()
-        tmp = create_subStructFileFdOprInp_t(addr, #type, 
-                                             12, 12)
-        #self.assertEqual(tmp.addr, addr)
-        #self.assertEqual(tmp.type, type)
-        self.assertEqual(tmp.fd, 12)
-        self.assertEqual(tmp.len, 12)
-
+        v1 = create_subStructFileFdOprInp_t()
+        v2 = create_subStructFileFdOprInp_t()
+        self.assertTrue(test_subStructFileFdOprInp_t(v1, v2))
+ 
     def test_subStructFileLseekInp_t(self):
-        addr = rodsHostAddr_t()
-        #type = structFileType_t()
-        tmp = create_subStructFileLseekInp_t(addr, #type, 
-                                             12, 12, 12)
-        #self.assertEqual(tmp.addr, addr)
-        #self.assertEqual(tmp.type, type)
-        self.assertEqual(tmp.fd, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.whence, 12)
-
+        v1 = create_subStructFileLseekInp_t()
+        v2 = create_subStructFileLseekInp_t()
+        self.assertTrue(test_subStructFileLseekInp_t(v1, v2))
+ 
     def test_subStructFileRenameInp_t(self):
-        subFile = subFile_t()
-        tmp = create_subStructFileRenameInp_t(subFile, "newSubFilePath")
-        #self.assertEqual(tmp.subFile, subFile)
-        self.assertEqual(tmp.newSubFilePath, "newSubFilePath")
+        v1 = create_subStructFileRenameInp_t()
+        v2 = create_subStructFileRenameInp_t()
+        self.assertTrue(test_subStructFileRenameInp_t(v1, v2))
 
 
 def suite():

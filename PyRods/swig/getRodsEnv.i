@@ -17,9 +17,7 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "getRodsEnv.h"
-%}
+
 
 /*****************************************************************************/
 
@@ -39,6 +37,16 @@ typedef struct {
    char rodsAuthFileName[LONG_NAME_LEN];
    char rodsDebug[NAME_LEN];
 } rodsEnv;
+
+%extend rodsEnv {
+    ~rodsEnv() {
+        if ($self) {
+            free($self->rodsServerDn);
+            free($self);
+       }
+       
+   }
+};
 
 /*****************************************************************************/
 

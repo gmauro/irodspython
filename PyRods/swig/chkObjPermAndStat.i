@@ -17,11 +17,10 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "chkObjPermAndStat.h"
-%}
-
 /*****************************************************************************/
+
+
+%ignore chkObjPermAndStat_t::condInput;
 
 typedef struct {
     char objPath[MAX_NAME_LEN];
@@ -30,6 +29,17 @@ typedef struct {
     int status;
     keyValPair_t condInput;
 } chkObjPermAndStat_t;
+
+
+%extend chkObjPermAndStat_t {
+
+    ~chkObjPermAndStat_t() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
 
 /*****************************************************************************/
 

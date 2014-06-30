@@ -129,6 +129,39 @@ typedef struct {
    int optind;
 } rodsArguments_t;
 
+%extend rodsArguments_t {
+
+    ~rodsArguments_t() {
+        if ($self) {
+            free($self->attrStr);
+            free($self->conditionString);
+            free($self->collectionString);
+            free($self->fileString);
+            free($self->rescGroupString);
+            free($self->hostAddrString);
+            free($self->dataTypeString);
+            free($self->mountType);
+            free($self->replNumValue);
+            free($self->physicalPathString);
+            free($self->logicalPathString);
+            free($self->optionString);
+            free($self->queryStr);
+            free($self->resourceString);
+            free($self->srcRescString);
+            free($self->subsetStr);
+            free($self->ticketString);
+            free($self->userString);
+            free($self->zoneName);
+            free($self->varStr);
+            free($self->restartFileString);
+            free($self->lfrestartFileString);
+            free($self->excludeFileString);
+            free($self);
+        }
+    }
+
+};
+
 /*****************************************************************************/
 
 int parseCmdLineOpt(int argc, char **argv, char *optString, int includeLong,

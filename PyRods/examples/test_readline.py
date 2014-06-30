@@ -27,8 +27,14 @@ if __name__ == "__main__":
                              myEnv.rodsUserName, myEnv.rodsZone)
     
     path = myEnv.rodsHome + '/test_readline.txt'
-    status = clientLogin(conn)
     print path
+    
+    status = clientLogin(conn)
+    
+    f = irodsOpen(conn, path, 'w')
+    f.write("-----\n"*50)
+    f.close()
+    
     f = irodsOpen(conn, path, 'r')
     for line in f:
         print line

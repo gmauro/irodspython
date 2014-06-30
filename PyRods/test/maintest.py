@@ -59,6 +59,7 @@ def suite():
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testMiscUtil))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testModAccessControl))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testMsParam))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testObf))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testParseCommandLine))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testRcConnect))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testRcMisc))
@@ -76,12 +77,14 @@ def suite():
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testRodsStructFile))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testRodsUser))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testRodsXmsg))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testSqlMisc))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(testStringOpr))
     
     
     return suite
 
 
-
+## valgrind test:
+##   valgrind --leak-check=full python maintest.py
 if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite())

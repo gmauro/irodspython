@@ -24,4 +24,10 @@ typedef struct {
     char msg[ERR_MSG_LEN];
 } rErrMsg_t;
 
+
+typedef struct {
+    int len;          /* number of error in the stack */
+    rErrMsg_t **errMsg; /* an array of pointers to the rErrMsg_t struct */
+} rError_t;
+
 /*****************************************************************************/

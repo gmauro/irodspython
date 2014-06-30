@@ -40,10 +40,12 @@
 #
 %}
 
-#define PYRODS_VERSION "3.3.4"
+#define PYRODS_VERSION "3.3.5"
 
 %include cstring.i
 %include templates.i
+
+%include header.i
 
 %include rodsException.i
 %include auth.i

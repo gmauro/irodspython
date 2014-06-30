@@ -24,157 +24,104 @@ from irods import *
 class testRodsFile(iRODSTestCase):
 
     def test_fileChmodInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileChmodInp_t(#fileType, 
-                                    addr, "fileName", 12)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
-        self.assertEqual(tmp.mode, 12)
+        v1 = create_fileChmodInp_t()
+        v2 = create_fileChmodInp_t()
+        self.assertTrue(test_fileChmodInp_t(v1, v2))
 
     def test_fileChksumInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileChksumInp_t(#fileType, 
-                                    addr, "fileName", 12)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
-        self.assertEqual(tmp.flag, 12)
+        v1 = create_fileChksumInp_t()
+        v2 = create_fileChksumInp_t()
+        self.assertTrue(test_fileChksumInp_t(v1, v2))
 
     def test_fileCloseInp_t(self):
-        tmp = create_fileCloseInp_t(12)
-        self.assertEqual(tmp.fileInx, 12)
+        v1 = create_fileCloseInp_t()
+        v2 = create_fileCloseInp_t()
+        self.assertTrue(test_fileCloseInp_t(v1, v2))
 
     def test_fileClosedirInp_t(self):
-        tmp = create_fileClosedirInp_t(12)
-        self.assertEqual(tmp.fileInx, 12)
+        v1 = create_fileClosedirInp_t()
+        v2 = create_fileClosedirInp_t()
+        self.assertTrue(test_fileClosedirInp_t(v1, v2))
 
     def test_fileFstatInp_t(self):
-        tmp = create_fileFstatInp_t(12)
-        self.assertEqual(tmp.fileInx, 12)
+        v1 = create_fileFstatInp_t()
+        v2 = create_fileFstatInp_t()
+        self.assertTrue(test_fileFstatInp_t(v1, v2))
 
     def test_fileFsyncInp_t(self):
-        tmp = create_fileFsyncInp_t(12)
-        self.assertEqual(tmp.fileInx, 12)
+        v1 = create_fileFsyncInp_t()
+        v2 = create_fileFsyncInp_t()
+        self.assertTrue(test_fileFsyncInp_t(v1, v2))
 
     def test_fileGetFsFreeSpaceInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileGetFsFreeSpaceInp_t(#fileType, 
-                                             addr, "fileName", 12)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
-        self.assertEqual(tmp.flag, 12)
+        v1 = create_fileGetFsFreeSpaceInp_t()
+        v2 = create_fileGetFsFreeSpaceInp_t()
+        self.assertTrue(test_fileGetFsFreeSpaceInp_t(v1, v2))
 
     def test_fileGetFsFreeSpaceOut_t(self):
-        tmp = create_fileGetFsFreeSpaceOut_t(12)
-        self.assertEqual(tmp.size, 12)
+        v1 = create_fileGetFsFreeSpaceOut_t()
+        v2 = create_fileGetFsFreeSpaceOut_t()
+        self.assertTrue(test_fileGetFsFreeSpaceOut_t(v1, v2))
 
     def test_fileLseekInp_t(self):
-        tmp = create_fileLseekInp_t(12, 12, 12)
-        self.assertEqual(tmp.fileInx, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.whence, 12)
+        v1 = create_fileLseekInp_t()
+        v2 = create_fileLseekInp_t()
+        self.assertTrue(test_fileLseekInp_t(v1, v2))
 
     def test_fileLseekOut_t(self):
-        tmp = create_fileLseekOut_t(12)
-        self.assertEqual(tmp.offset, 12)
+        v1 = create_fileLseekOut_t()
+        v2 = create_fileLseekOut_t()
+        self.assertTrue(test_fileLseekOut_t(v1, v2))
 
     def test_fileMkdirInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        condInput = keyValPair_t()
-        tmp = create_fileMkdirInp_t(#fileType, 
-                                    addr, "dirName", 12, condInput)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.dirName, "dirName")
-        self.assertEqual(tmp.mode, 12)
-        #self.assertEqual(tmp.condInput, condInput)
+        v1 = create_fileMkdirInp_t()
+        v2 = create_fileMkdirInp_t()
+        self.assertTrue(test_fileMkdirInp_t(v1, v2))
 
     def test_fileOpenInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        condInput = keyValPair_t()
-        tmp = create_fileOpenInp_t(#fileType, 
-                                  12, addr, "fileName", 12, 12, 12, condInput)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
-        self.assertEqual(tmp.flags, 12)
-        self.assertEqual(tmp.mode, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        #self.assertEqual(tmp.condInput, condInput)
+        v1 = create_fileOpenInp_t()
+        v2 = create_fileOpenInp_t()
+        self.assertTrue(test_fileOpenInp_t(v1, v2))
 
     def test_fileOpendirInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileOpendirInp_t(#fileType, 
-                                      addr, "dirName")
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.dirName, "dirName")
+        v1 = create_fileOpendirInp_t()
+        v2 = create_fileOpendirInp_t()
+        self.assertTrue(test_fileOpendirInp_t(v1, v2))
 
     def test_fileReadInp_t(self):
-        tmp = create_fileReadInp_t(12, 12)
-        self.assertEqual(tmp.fileInx, 12)
-        self.assertEqual(tmp.len, 12)
+        v1 = create_fileReadInp_t()
+        v2 = create_fileReadInp_t()
+        self.assertTrue(test_fileReadInp_t(v1, v2))
 
     def test_fileRenameInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileRenameInp_t(#fileType, 
-                                      addr, "oldFileName", "newFileName")
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.oldFileName, "oldFileName")
-        self.assertEqual(tmp.newFileName, "newFileName")
+        v1 = create_fileRenameInp_t()
+        v2 = create_fileRenameInp_t()
+        self.assertTrue(test_fileRenameInp_t(v1, v2))
 
     def test_fileRmdirInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileRmdirInp_t(#fileType, 
-                                    12, addr, "dirName")
-        #self.assertEqual(tmp.fileType, fileType)
-        self.assertEqual(tmp.flags, 12)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.dirName, "dirName")
+        v1 = create_fileRmdirInp_t()
+        v2 = create_fileRmdirInp_t()
+        self.assertTrue(test_fileRmdirInp_t(v1, v2))
 
     def test_fileStageInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileStageInp_t(#fileType, 
-                                    addr,  "fileName", 12)
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
-        self.assertEqual(tmp.flag, 12)
+        v1 = create_fileStageInp_t()
+        v2 = create_fileStageInp_t()
+        self.assertTrue(test_fileStageInp_t(v1, v2))
 
     def test_fileStatInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileStatInp_t(#fileType, 
-                                   addr, "fileName")
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
+        v1 = create_fileStatInp_t()
+        v2 = create_fileStatInp_t()
+        self.assertTrue(test_fileStatInp_t(v1, v2))
 
     def test_fileUnlinkInp_t(self):
-        #fileType = fileDriverType_t()
-        addr = rodsHostAddr_t()
-        tmp = create_fileUnlinkInp_t(#fileType, 
-                                     addr, "fileName")
-        #self.assertEqual(tmp.fileType, fileType)
-        #self.assertEqual(tmp.addr, addr)
-        self.assertEqual(tmp.fileName, "fileName")
+        v1 = create_fileUnlinkInp_t()
+        v2 = create_fileUnlinkInp_t()
+        self.assertTrue(test_fileUnlinkInp_t(v1, v2))
 
     def test_fileWriteInp_t(self):
-        tmp = create_fileWriteInp_t(12, 12)
-        self.assertEqual(tmp.fileInx, 12)
-        self.assertEqual(tmp.len, 12)
+        v1 = create_fileWriteInp_t()
+        v2 = create_fileWriteInp_t()
+        self.assertTrue(test_fileWriteInp_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

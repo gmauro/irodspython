@@ -344,19 +344,19 @@ class irodsZone:
 /*****************************************************************************/
 
 typedef struct {
-    char authScheme[NAME_LEN];     /* Authentication scheme */
-    int authFlag;   /* the status of authentication */
-    int flag;       
-    int ppid;       /* session ppid */
-    char host[NAME_LEN]; /* session host */
-    char authStr[NAME_LEN];      /* for gsi, the dn */
+    char authScheme[NAME_LEN];
+    int authFlag;
+    int flag;
+    int ppid;
+    char host[NAME_LEN];
+    char authStr[NAME_LEN];
 } authInfo_t;
 
 typedef struct {
     char userName[NAME_LEN];
     char rodsZone[NAME_LEN];
     char userType[NAME_LEN];
-    int sysUid;     /* the unix system uid */
+    int sysUid;
     authInfo_t authInfo;
     userOtherInfo_t userOtherInfo;
 } userInfo_t;

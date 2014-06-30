@@ -17,20 +17,7 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "closeCollection.h"
-#include "collCreate.h"
-#include "collRepl.h"
-#include "modColl.h"
-#include "openCollection.h"
-#include "phyPathReg.h"
-#include "readCollection.h"
-#include "regDataObj.h"
-#include "regColl.h"
-#include "regReplica.h"
-#include "syncMountedColl.h"
-#include "unregDataObj.h"
-%}
+
 
 /*****************************************************************************/
 
@@ -258,6 +245,13 @@ class irodsFile:
         return self.descInx
 
     def flush(self):
+#        global lastStatus
+#        dataObjFsyncInp = openedDataObjInp_t()
+#        dataObjFsyncInp.l1descInx = self.descInx
+#        print self.descInx, self.resourceName
+#        lastStatus = rcDataObjFsync (self._conn, dataObjFsyncInp)
+#        print lastStatus
+#        return lastStatus
         pass
 
     def fullPath(self):
@@ -355,15 +349,19 @@ class irodsFile:
         return self.resourceName
 
     def getTypeName(self):
-        d = self.getInfos();
+        d = self.getInfos()
         return d.get("data_type_name", "")
 
     def getSize(self):
-        d = self.getInfos();
-        return int(d.get("data_size", "0"))
+        d = self.getInfos()
+        try:
+            size = int(d.get("data_size", "0"))
+        except ValueError:
+            size = 0
+        return size
 
     def getStatus(self):
-        d = self.getInfos();
+        d = self.getInfos()
         return d.get("data_status", "")
 
     def getUserMetadata(self):
@@ -528,10 +526,31 @@ typedef struct {
     keyValPair_t condInput;
 } regReplica_t;
 
+%extend regReplica_t {
+    ~regReplica_t() {
+        if ($self) {
+            delete_DataObjInfo($self->srcDataObjInfo);
+            delete_DataObjInfo($self->destDataObjInfo);
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct {
     dataObjInfo_t *dataObjInfo;
     keyValPair_t *condInput;
 } unregDataObj_t;
+
+%extend unregDataObj_t {
+    ~unregDataObj_t() {
+        if ($self) {
+            delete_DataObjInfo($self->dataObjInfo);
+            delete_KeyValPair($self->condInput);
+            free($self);
+        }
+    }
+}
 
 /*****************************************************************************/
 

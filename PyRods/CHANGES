@@ -65,3 +65,10 @@
 
 * 3.3.4:
   - switch to iRODS 3.3.1
+
+* 3.3.5:
+  - Try to fix memory leaks (Issue 25, fix from mhellmic)
+  - Improve destructors to fix memory leaks
+  - Improve inxValPair, inxIValPair, ...
+
+

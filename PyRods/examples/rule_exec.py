@@ -38,8 +38,8 @@ def printMsParamNew(outParamArray, output):
                 print "%s = %f" % (msParam.label, msParam.getInOutAsDouble())
             elif msParam.type == KeyValPair_MS_T:
                 kVPairs = msParam.getInOutAsKeyValPair()
-                print "KVpairs %s: %i" % (msParam.label, kVPairs.len)
-                for j in xrange(kVPairs.len):
+                print "KVpairs %s: %i" % (msParam.label, kVPairs.getLen())
+                for j in xrange(kVPairs.getLen()):
                     print "       %s = %s" % (kVPairs.getKeyWord(j),
                                               kVPairs.getValue(j))
             elif msParam.type == TagStruct_MS_T:
@@ -74,30 +74,34 @@ if __name__ == "__main__":
     
     execMyRuleInp = execMyRuleInp_t()
     msParamArray = msParamArray_t()
-    execMyRuleInp.myRule = 'myTestRule { writeLine("stdout","Sample rule *Double *Int *Path " ); }'
+#     execMyRuleInp.myRule = 'myTestRule { writeLine("stdout","Sample rule *Double *Int *Path " ); }'
+    execMyRuleInp.myRule = 'myTestRule { writeLine("stdout","Sample rule *Int  " ); }'
     execMyRuleInp.inpParamArray = msParamArray
-    addCharParamToArray(msParamArray, "*Path", "/myZone/home/john/coll1")
-    addIntParamToArray(msParamArray, "*Int", 12)
-    addDoubleParamToArray(msParamArray, "*Double", 12.0)
-    
-    keyVal = keyValPair_t()
-    addKeyVal(keyVal, "test1", "value1")
-    addKeyVal(keyVal, "test2", "value2")
-    addKeyValParamToArray(msParamArray, "*keyVal", keyVal)
-    
-    tagStruct = tagStruct_t()
-    addTagStruct(tagStruct, "pre", "post", "keyWord")
-    addTagStructParamToArray(msParamArray, "*tag", tagStruct)
-    
+#     addCharParamToArray(msParamArray, "*Path", "/myZone/home/john/coll1")
+#     msParamArray.addCharParam("*Path", "/myZone/home/john/coll1")
+#     addIntParamToArray(msParamArray, "*Int", 12)
+    msParamArray.addIntParam("*Int", 12)
+#     addDoubleParamToArray(msParamArray, "*Double", 12.0)
+#     msParamArray.addDoubleParam("*Double", 12.0)
+     
+#     keyVal = keyValPair_t()
+#     addKeyVal(keyVal, "test1", "value1")
+#     addKeyVal(keyVal, "test2", "value2")
+#     addKeyValParamToArray(msParamArray, "*keyVal", keyVal)
+     
+#     tagStruct = tagStruct_t()
+#     addTagStruct(tagStruct, "pre", "post", "keyWord")
+#     addTagStructParamToArray(msParamArray, "*tag", tagStruct)
+     
     printMsParamNew(execMyRuleInp.inpParamArray, 0)
-    
+     
     execMyRuleInp.outParamDesc = "ruleExecOut"
     status, outParamArray = rcExecMyRule(conn, execMyRuleInp)
-    
+      
     msParam = outParamArray.getMsParam(0)
-    
+      
     printMsParamNew(outParamArray, 0)
-    
+      
     mP = getMsParamByType(outParamArray, ExecCmdOut_MS_T)
     if mP != None:
         execCmdOut = mP.getInOutAsExecCmdOut()

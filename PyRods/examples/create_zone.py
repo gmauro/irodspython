@@ -30,6 +30,7 @@ if __name__ == "__main__":
     
     # Create a zone, the comment parameter is optional, there's also a connstr optional param
     zone = createZone(conn, "testZone", "remote", comment="test")
+    print zone
     # Delete the zone
     deleteZone(conn, "testZone")
     

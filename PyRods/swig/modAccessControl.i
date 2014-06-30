@@ -27,6 +27,20 @@ typedef struct {
    char *path;
 } modAccessControlInp_t;
 
+%extend modAccessControlInp_t {
+
+    ~modAccessControlInp_t() {
+        if ($self) {
+            free($self->accessLevel);
+            free($self->userName);
+            free($self->zone);
+            free($self->path);
+            free($self);
+        }
+    }
+
+};
+
 /*****************************************************************************/
 
 int rcModAccessControl (rcComm_t *conn, modAccessControlInp_t *modAccessControlInp);

@@ -16,13 +16,6 @@
  *
  * Author       : Jerome Fuselier
  */
- 
- %{
-#include "authCheck.h"
-#include "authRequest.h"
-#include "authResponse.h"
-#include "gsiAuthRequest.h"
-%}
 
 
 /*****************************************************************************/
@@ -33,24 +26,77 @@ typedef struct {
    char *username;
 } authCheckInp_t;
 
+%extend authCheckInp_t {
+    ~authCheckInp_t() {
+        if ($self) {
+            free($self->challenge);
+            free($self->response);
+            free($self->username);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct {
    int  privLevel;
    int  clientPrivLevel;
    char *serverResponse;
 } authCheckOut_t;
 
+%extend authCheckOut_t {
+    ~authCheckOut_t() {
+        if ($self != NULL) {
+            free($self->serverResponse);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct {
    char *response;
    char *username;
 } authResponseInp_t;
 
+%extend authResponseInp_t {
+    ~authResponseInp_t() {
+        if ($self) {
+            free($self->response);
+            free($self->username);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct {
    char *challenge;
 } authRequestOut_t;
 
+%extend authRequestOut_t {
+    ~authRequestOut_t() {
+        if ($self) {
+            free($self->challenge);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct {
    char *serverDN;
 } gsiAuthRequestOut_t;
+
+%extend gsiAuthRequestOut_t {
+    ~gsiAuthRequestOut_t() {
+        if ($self) {
+            free($self->serverDN);
+            free($self);
+       }
+       
+   }
+};
 
 /*****************************************************************************/
 

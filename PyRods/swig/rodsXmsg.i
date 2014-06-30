@@ -17,11 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "getXmsgTicket.h"
-#include "rcvXmsg.h"
-#include "sendXmsg.h"
-%}
 
 /*****************************************************************************/
 
@@ -46,6 +41,17 @@ typedef struct RcvXmsgOut {
     char *msg;
 } rcvXmsgOut_t;
 
+%extend RcvXmsgOut {
+
+    ~RcvXmsgOut() {
+        if ($self) {
+            free($self->msg);
+            free($self);
+        }
+    }
+
+};
+
 typedef struct XmsgTicketInfo {
     unsigned int sendTicket;
     unsigned int rcvTicket;
@@ -58,6 +64,54 @@ typedef struct {
     char sendAddr[NAME_LEN];
     sendXmsgInfo_t sendXmsgInfo;
 } sendXmsgInp_t;
+
+%extend sendXmsgInp_t {
+    ~sendXmsgInp_t() {
+        if ($self) {
+            clear_SendXmsgInfo(&$self->sendXmsgInfo);
+            free($self);
+        }
+    }
+}
+
+
+%ignore SendXmsgInfo::deliAddress;
+%ignore SendXmsgInfo::deliPort;
+
+typedef struct SendXmsgInfo {
+    unsigned int msgNumber;
+    char msgType[HEADER_TYPE_LEN];
+    unsigned int numRcv;
+    int flag;
+    char *msg;
+    int numDeli;
+    char **deliAddress;
+    unsigned int *deliPort;
+    char *miscInfo;
+} sendXmsgInfo_t;
+
+%extend SendXmsgInfo {
+    ~SendXmsgInfo() {
+        if ($self) {
+            free($self->msg);
+            free($self->deliAddress);
+            free($self->deliPort);
+            free($self->miscInfo);
+            free($self);
+        }
+    }
+}
+
+%{
+void clear_SendXmsgInfo(sendXmsgInfo_t * sendXmsgInfo) {
+    if (sendXmsgInfo) {
+        free(sendXmsgInfo->msg);
+        free(sendXmsgInfo->deliAddress);
+        free(sendXmsgInfo->deliPort);
+        free(sendXmsgInfo->miscInfo);
+    }
+}
+%}
 
 /*****************************************************************************/
 

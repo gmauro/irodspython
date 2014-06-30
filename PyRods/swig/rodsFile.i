@@ -17,34 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "fileChmod.h"
-#include "fileChksum.h"
-#include "fileClose.h"
-#include "fileClosedir.h"
-#include "fileCreate.h"
-#include "fileFstat.h"
-#include "fileFsync.h"
-#include "fileGet.h"
-#include "fileGetFsFreeSpace.h"
-#include "fileLseek.h"
-#include "fileMkdir.h"
-#include "fileOpen.h"
-#include "fileOpendir.h"
-#include "filePut.h"
-#include "fileRead.h"
-#include "fileReaddir.h"
-#include "fileRename.h"
-#include "fileRmdir.h"
-#include "fileOpen.h"
-#include "fileStage.h"
-#include "fileStat.h"
-#include "fileTruncate.h"
-#include "fileUnlink.h"
-#include "fileWrite.h"
-#include "l3FileGetSingleBuf.h"
-#include "l3FilePutSingleBuf.h"
-%}
 
 /*****************************************************************************/
 
@@ -109,6 +81,15 @@ typedef struct {
     keyValPair_t condInput;
 } fileMkdirInp_t;
 
+%extend fileMkdirInp_t {
+    ~fileMkdirInp_t() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct {
     fileDriverType_t fileType;
     int otherFlags;
@@ -119,6 +100,15 @@ typedef struct {
     rodsLong_t dataSize;
     keyValPair_t condInput;
 } fileOpenInp_t;
+
+%extend fileOpenInp_t {
+    ~fileOpenInp_t() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
 
 typedef struct {
     fileDriverType_t fileType;

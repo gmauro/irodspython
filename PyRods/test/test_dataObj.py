@@ -24,146 +24,49 @@ from irods import *
 class testDataObj(iRODSTestCase):
 
     def test_collInp_t(self):
-        condInput = keyValPair_t()
-        tmp = create_collInp_t("collName", 12, 12, condInput)
-        self.assertEqual(tmp.collName, "collName")
-        self.assertEqual(tmp.flags, 12)
-        self.assertEqual(tmp.oprType, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 = create_collInp_t()
+        v2 = create_collInp_t()
+        self.assertTrue(test_collInp_t(v1, v2))
+ 
     def test_dataCopyInp_t(self):
-        dataOprInp = dataOprInp_t()
-        portalOprOut = portalOprOut_t()
-        tmp = create_dataCopyInp_t(dataOprInp, portalOprOut)
-        self.assertIsNotNone(tmp)
-        #self.assertEqual(tmp.dataOprInp, dataOprInp)
-        #self.assertEqual(tmp.portalOprOut, portalOprOut)
-
+        v1 = create_dataCopyInp_t()
+        v2 = create_dataCopyInp_t()
+        self.assertTrue(test_dataCopyInp_t(v1, v2))
+   
     def test_dataObjCopyInp_t(self):
-        srcDataObjInp = dataObjInp_t()
-        destDataObjInp = dataObjInp_t()
-        tmp = create_dataObjCopyInp_t(srcDataObjInp, destDataObjInp)
+        v1 = create_dataObjCopyInp_t()
+        v2 = create_dataObjCopyInp_t()
+        self.assertTrue(test_dataObjCopyInp_t(v1, v2))
 
     def test_dataObjInp_t(self):
-        specColl = specColl_t()
-        condInput = keyValPair_t()
-        tmp = create_dataObjInp_t("objPath", 12, 12, 12, 12, 12, 12, specColl,
-                                  condInput)
-        self.assertEqual(tmp.objPath, "objPath")
-        self.assertEqual(tmp.createMode, 12)
-        self.assertEqual(tmp.openFlags, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        self.assertEqual(tmp.numThreads, 12)
-        self.assertEqual(tmp.oprType, 12)
-        #self.assertEqual(tmp.specColl, specColl)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 = create_dataObjInp_t()
+        v2 = create_dataObjInp_t()
+        self.assertTrue(test_dataObjInp_t(v1, v2))
+    
     def test_dataOprInp_t(self):
-        condInput = keyValPair_t()
-        tmp =  create_dataOprInp_t(12, 12, 12, 12, 12, 12, 12, 12, condInput)
-        self.assertEqual(tmp.oprType, 12)
-        self.assertEqual(tmp.numThreads, 12)
-        self.assertEqual(tmp.srcL3descInx, 12)
-        self.assertEqual(tmp.destL3descInx, 12)
-        self.assertEqual(tmp.srcRescTypeInx, 12)
-        self.assertEqual(tmp.destRescTypeInx, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 =  create_dataOprInp_t()
+        v2 =  create_dataOprInp_t()
+        self.assertTrue(test_dataOprInp_t(v1, v2))
+     
     def test_openedDataObjInp_t(self):
-        condInput = keyValPair_t()
-        tmp =  create_openedDataObjInp_t(12, 12, 12, 12, 12, 12, condInput)
-        self.assertEqual(tmp.l1descInx, 12)
-        self.assertEqual(tmp.len, 12)
-        self.assertEqual(tmp.whence, 12)
-        self.assertEqual(tmp.oprType, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.bytesWritten, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-
+        v1 =  create_openedDataObjInp_t()
+        v2 =  create_openedDataObjInp_t()
+        self.assertTrue(test_openedDataObjInp_t(v1, v2))
+    
     def test_openStat_t(self):
-        tmp = create_openStat_t(12, "dataType", "dataMode", 12, 12, 12, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        self.assertEqual(tmp.dataType, "dataType")
-        self.assertEqual(tmp.dataMode, "dataMode")
-        self.assertEqual(tmp.l3descInx, 12)
-        self.assertEqual(tmp.replStatus, 12)
-        self.assertEqual(tmp.rescTypeInx, 12)
-        self.assertEqual(tmp.replNum, 12)
-        return tmp
-
+        v1 = create_openStat_t()
+        v2 = create_openStat_t()
+        self.assertTrue(test_openStat_t(v1, v2))
+    
     def test_portalOprOut_t(self):
-        portList = portList_t()
-        tmp = create_portalOprOut_t(12, 12, 12, "chksum", portList)
-        self.assertEqual(tmp.status, 12)
-        self.assertEqual(tmp.l1descInx, 12)
-        self.assertEqual(tmp.numThreads, 12)
-        self.assertEqual(tmp.chksum, "chksum")
-        #self.assertEqual(tmp.portList, portList)
-        return tmp
-
-    def test_portList_t_unicode(self):
-        tmp = create_portList_t(12, 12, 12, u"hostAddr")
-        self.assertEqual(tmp.portNum, 12)
-        self.assertEqual(tmp.cookie, 12)
-        self.assertEqual(tmp.windowSize, 12)
-        self.assertEqual(tmp.hostAddr, u"hostAddr")
-        return tmp
-
-    def test_collInp_t_unicode(self):
-        condInput = keyValPair_t()
-        tmp = create_collInp_t(u"collName", 12, 12, condInput)
-        self.assertEqual(tmp.collName, u"collName")
-        self.assertEqual(tmp.flags, 12)
-        self.assertEqual(tmp.oprType, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-
-    def test_dataObjInp_t_unicode(self):
-        specColl = specColl_t()
-        condInput = keyValPair_t()
-        tmp = create_dataObjInp_t(u"objPath", 12, 12, 12, 12, 12, 12, specColl,
-                                  condInput)
-        self.assertEqual(tmp.objPath, u"objPath")
-        self.assertEqual(tmp.createMode, 12)
-        self.assertEqual(tmp.openFlags, 12)
-        self.assertEqual(tmp.offset, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        self.assertEqual(tmp.numThreads, 12)
-        self.assertEqual(tmp.oprType, 12)
-        #self.assertEqual(tmp.specColl, specColl)
-        #self.assertEqual(tmp.condInput, condInput)
-
-    def test_openStat_t_unicode(self):
-        tmp = create_openStat_t(12, u"dataType", u"dataMode", 12, 12, 12, 12)
-        self.assertEqual(tmp.dataSize, 12)
-        self.assertEqual(tmp.dataType, u"dataType")
-        self.assertEqual(tmp.dataMode, u"dataMode")
-        self.assertEqual(tmp.l3descInx, 12)
-        self.assertEqual(tmp.replStatus, 12)
-        self.assertEqual(tmp.rescTypeInx, 12)
-        self.assertEqual(tmp.replNum, 12)
-        return tmp
-
-    def test_portalOprOut_t_unicode(self):
-        portList = portList_t()
-        tmp = create_portalOprOut_t(12, 12, 12, u"chksum", portList)
-        self.assertEqual(tmp.status, 12)
-        self.assertEqual(tmp.l1descInx, 12)
-        self.assertEqual(tmp.numThreads, 12)
-        self.assertEqual(tmp.chksum, u"chksum")
-        #self.assertEqual(tmp.portList, portList)
-        return tmp
-
-    def test_portList_t_unicode(self):
-        tmp = create_portList_t(12, 12, 12, u"hostAddr")
-        self.assertEqual(tmp.portNum, 12)
-        self.assertEqual(tmp.cookie, 12)
-        self.assertEqual(tmp.windowSize, 12)
-        self.assertEqual(tmp.hostAddr, u"hostAddr")
-        return tmp
-
+        v1 = create_portalOprOut_t()
+        v2 = create_portalOprOut_t()
+        self.assertTrue(test_portalOprOut_t(v1, v2))
+    
+    def test_portList_t(self):
+        v1 = create_portList_t()
+        v2 = create_portList_t()
+        self.assertTrue(test_portList_t(v1, v2))
 
 
 def suite():

@@ -29,6 +29,7 @@ if __name__ == "__main__":
     user = createUser(conn, "test", "rodsuser")
     
     print user
+    print user.userName
     
     # Delete a user
     deleteUser(conn, "test")

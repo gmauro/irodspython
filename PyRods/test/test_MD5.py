@@ -22,8 +22,11 @@ from common import *
 from irods import *
 
 class testMd5(iRODSTestCase):
-    
-    pass
+
+    def test_MD5_CTX(self):
+        v1 = create_MD5_CTX()
+        v2 = create_MD5_CTX()
+        self.assertTrue(test_MD5_CTX(v1, v2))
 
 
 def suite():

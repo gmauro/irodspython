@@ -17,32 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "dataCopy.h"
-#include "dataGet.h"
-#include "dataPut.h"
-#include "dataObjChksum.h"
-#include "dataObjClose.h"
-#include "dataObjCreate.h"
-#include "dataObjCreateAndStat.h"
-#include "dataObjGet.h"
-#include "dataObjInpOut.h"
-#include "dataObjLock.h"
-#include "dataObjLseek.h"
-#include "dataObjOpen.h"
-#include "dataObjOpenAndStat.h"
-#include "dataObjPhymv.h"
-#include "dataObjPut.h"
-#include "dataObjRead.h"
-#include "dataObjRename.h"
-#include "dataObjRepl.h"
-#include "dataObjRsync.h"
-#include "dataObjTrim.h"
-#include "dataObjTruncate.h"
-#include "dataObjUnlink.h"
-#include "dataObjWrite.h"
-%}
-
 /*****************************************************************************/
 
 typedef struct CollInp {
@@ -52,15 +26,45 @@ typedef struct CollInp {
     keyValPair_t condInput;
 } collInp_t;
 
+%extend CollInp {
+    ~CollInp() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct DataCopyInp {
     dataOprInp_t dataOprInp;
     portalOprOut_t portalOprOut;
 } dataCopyInp_t;
 
+%extend DataCopyInp {
+    ~DataCopyInp() {
+        if ($self) {
+            clear_DataOprInp(&$self->dataOprInp);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct DataObjCopyInp {
     dataObjInp_t srcDataObjInp;
     dataObjInp_t destDataObjInp;
 } dataObjCopyInp_t;
+
+%extend DataObjCopyInp {
+    ~DataObjCopyInp() {
+        if ($self) {
+            clear_DataObjInp(&$self->srcDataObjInp);
+            clear_DataObjInp(&$self->destDataObjInp);
+            free($self);
+       }
+       
+   }
+};
 
 typedef struct DataObjInp {
     char objPath[MAX_NAME_LEN];
@@ -74,6 +78,24 @@ typedef struct DataObjInp {
     keyValPair_t condInput;
 } dataObjInp_t;
 
+%{
+void clear_DataObjInp(dataObjInp_t * dataObjInp) {
+    delete_SpecColl(dataObjInp->specColl);
+    clearKeyVal(&dataObjInp->condInput);
+}
+%}
+
+%extend DataObjInp {
+    ~DataObjInp() {
+        if ($self) {
+            delete_SpecColl($self->specColl);
+            clearKeyVal(&$self->condInput);
+            free($self);
+       }
+       
+   }
+};
+
 typedef struct DataOprInp {
     int oprType;
     int numThreads;
@@ -86,6 +108,21 @@ typedef struct DataOprInp {
     keyValPair_t condInput;
 } dataOprInp_t;
 
+%{
+void clear_DataOprInp(dataOprInp_t * dataOprInp) {
+    clearKeyVal(&dataOprInp->condInput);
+}
+%}
+
+%extend DataOprInp {
+    ~DataOprInp() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct OpenedDataObjInp {
     int l1descInx;
     int len;
@@ -95,6 +132,15 @@ typedef struct OpenedDataObjInp {
     rodsLong_t bytesWritten;
     keyValPair_t condInput;
 } openedDataObjInp_t;
+
+%extend OpenedDataObjInp {
+    ~OpenedDataObjInp() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
 
 typedef struct OpenStat {
     rodsLong_t dataSize;
@@ -193,6 +239,10 @@ PyObject * rcDataObjCreateAndStat(rcComm_t *conn, dataObjInp_t *dataObjInp) {
                                             SWIGTYPE_p_OpenStat, 0 |  0 ));
 }
 %}
+
+/*****************************************************************************/
+
+int rcDataObjFsync (rcComm_t *conn, openedDataObjInp_t *dataObjFsyncInp);
 
 /*****************************************************************************/
 

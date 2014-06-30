@@ -24,56 +24,34 @@ from irods import *
 class testRodsQuery(iRODSTestCase):
 
     def test_generalUpdateInp_t(self):
-        values = inxValPair_t()
-        tmp = create_generalUpdateInp_t(12, values)
-        self.assertEqual(tmp.type, 12)
-        #self.assertEqual(tmp.values, values)
+        v1 = create_generalUpdateInp_t()
+        v2 = create_generalUpdateInp_t()
+        self.assertTrue(test_generalUpdateInp_t(v1, v2))
 
     def test_genQueryInp_t(self):
-        condInput = keyValPair_t()
-        selectInp = inxIvalPair_t()
-        sqlCondInp = inxValPair_t()
-        tmp = create_genQueryInp_t(12, 12, 12, 12, condInput, selectInp, 
-                                   sqlCondInp)
-        self.assertEqual(tmp.maxRows, 12)
-        self.assertEqual(tmp.continueInx, 12)
-        self.assertEqual(tmp.rowOffset, 12)
-        self.assertEqual(tmp.options, 12)
-        #self.assertEqual(tmp.condInput, condInput)
-        #self.assertEqual(tmp.selectInp, selectInp)
-        #self.assertEqual(tmp.sqlCondInp, sqlCondInp)
-
+        v1 = create_genQueryInp_t()
+        v2 = create_genQueryInp_t()
+        self.assertTrue(test_genQueryInp_t(v1, v2))
+         
     def test_genQueryOut_t(self):
-        sqlResult = sqlResult_t()
-        tmp = create_genQueryOut_t(12, 12, 12, 12, sqlResult)
-        self.assertEqual(tmp.rowCnt, 12)
-        self.assertEqual(tmp.attriCnt, 12)
-        self.assertEqual(tmp.continueInx, 12)
-        self.assertEqual(tmp.totalRowCount, 12)
-        #self.assertEqual(tmp.sqlResult, sqlResult)
-
+        v1 = create_genQueryOut_t()
+        v2 = create_genQueryOut_t()
+        self.assertTrue(test_genQueryOut_t(v1, v2))
+   
     def test_simpleQueryInp_t(self):
-        tmp = create_simpleQueryInp_t("sql", "arg1", "arg2", "arg3", "arg4", 
-                                      12, 12, 12)
-        self.assertEqual(tmp.sql, "sql")
-        self.assertEqual(tmp.arg1, "arg1")
-        self.assertEqual(tmp.arg2, "arg2")
-        self.assertEqual(tmp.arg3, "arg3")
-        self.assertEqual(tmp.arg4, "arg4")
-        self.assertEqual(tmp.control, 12)
-        self.assertEqual(tmp.form, 12)
-        self.assertEqual(tmp.maxBufSize, 12)
-
+        v1 = create_simpleQueryInp_t()
+        v2 = create_simpleQueryInp_t()
+        self.assertTrue(test_simpleQueryInp_t(v1, v2))
+   
     def test_simpleQueryOut_t(self):
-        tmp = create_simpleQueryOut_t(12, "outBuf")
-        self.assertEqual(tmp.control, 12)
-        self.assertEqual(tmp.outBuf, "outBuf")
-
+        v1 = create_simpleQueryOut_t()
+        v2 = create_simpleQueryOut_t()
+        self.assertTrue(test_simpleQueryOut_t(v1, v2))
+   
     def test_sqlResult_t(self):
-        tmp = create_sqlResult_t(12, 12, "value")
-        self.assertEqual(tmp.attriInx, 12)
-        self.assertEqual(tmp.len, 12)
-        self.assertEqual(tmp.value, "value")
+        v1 = create_sqlResult_t()
+        v2 = create_sqlResult_t()
+        self.assertTrue(test_sqlResult_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

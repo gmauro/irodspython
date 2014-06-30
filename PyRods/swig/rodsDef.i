@@ -17,9 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "rodsDef.h"
-%}
 
 
 /*****************************************************************************/
@@ -29,14 +26,17 @@ typedef struct BytesBuf {
     void *buf;
 } bytesBuf_t;
 
-%extend bytesBuf_t {
+%extend BytesBuf {
     
     void malloc(int size) {
         $self->buf = malloc(size);
     }
     
     ~BytesBuf() {
-        if ($self->buf)	free($self->buf);
+        if ($self) {
+            free($self->buf);
+            free($self);
+        }
     }
     
     void setBuf(char * buf, int len) {
@@ -58,6 +58,14 @@ typedef struct BytesBuf {
 
 }
 
+%{
+void clear_BytesBuf(bytesBuf_t * bytesBuf) {
+    if (bytesBuf) {
+        free(bytesBuf->buf);
+    }
+}
+%}
+
 typedef struct {
    char stringToHashWith[MAX_PASSWORD_LEN];
 } getTempPasswordOut_t; 
@@ -77,6 +85,11 @@ typedef enum {
     LOCAL_DIR_T,
     NO_INPUT_T
 } objType_t;
+
+typedef enum {
+    NATIVE_PROT,
+    XML_PROT
+} irodsProt_t;
 
 typedef struct rodsDirent {
         unsigned int    d_offset;
@@ -130,5 +143,41 @@ typedef struct {
     char reconnAddr[LONG_NAME_LEN];
     int cookie;
 } version_t;
+
+typedef struct {
+    int numThreads;
+    int flags;
+    rodsLong_t bytesWritten;
+} transferStat_t;
+
+typedef struct OperProgress {
+    int oprType;
+    int flag;
+    rodsLong_t totalNumFiles;
+    rodsLong_t totalFileSize;
+    rodsLong_t totalNumFilesDone;
+    rodsLong_t totalFileSizeDone;
+    char curFileName[MAX_NAME_LEN];
+    rodsLong_t curFileSize;
+    rodsLong_t curFileSizeDone;
+} operProgress_t;
+
+typedef enum {
+    UNIX_FILE_TYPE,
+    HPSS_FILE_TYPE,
+    NT_FILE_TYPE,
+    TEST_STAGE_FILE_TYPE,
+    S3_FILE_TYPE,
+    UNIV_MSS_FILE_TYPE,
+    WOS_FILE_TYPE,
+    MSO_FILE_TYPE,
+    NON_BLOCKING_FILE_TYPE,
+    DIRECT_ACCESS_FILE_TYPE,
+    OOICI_FILE_TYPE,
+    PYDAP_FILE_TYPE,
+    ERDDAP_FILE_TYPE,
+    TDS_FILE_TYPE,
+    HDFS_FILE_TYPE
+} fileDriverType_t;
 
 /*****************************************************************************/

@@ -369,10 +369,10 @@ def getDataObjId(conn, coll_name, data_name):
 ## instance
 def getDataObjReplicaNumber(conn, coll_name, data_name, resc_name):
     genQueryInp = genQueryInp_t()
-    addInxVal(genQueryInp.sqlCondInp, COL_COLL_NAME, "='%s'" % coll_name)
-    addInxVal(genQueryInp.sqlCondInp, COL_DATA_NAME, "='%s'" % data_name)
-    addInxVal(genQueryInp.sqlCondInp, COL_D_RESC_NAME, "='%s'" % resc_name)
-    addInxIval(genQueryInp.selectInp, COL_DATA_REPL_NUM, 1)
+    genQueryInp.addSqlCondInp(COL_COLL_NAME, "='%s'" % coll_name)
+    genQueryInp.addSqlCondInp(COL_DATA_NAME, "='%s'" % data_name)
+    genQueryInp.addSqlCondInp(COL_D_RESC_NAME, "='%s'" % resc_name)
+    genQueryInp.addSelectInp(COL_DATA_REPL_NUM, 1)
     genQueryInp.maxRows = MAX_SQL_ROWS
     genQueryOut = rcGenQuery(conn, genQueryInp)
     rescNum = getSqlResultByInx(genQueryOut, COL_DATA_REPL_NUM)
@@ -380,7 +380,11 @@ def getDataObjReplicaNumber(conn, coll_name, data_name, resc_name):
         # Should only have one row as output
         rescNum = getSqlResultByInx(genQueryOut, COL_DATA_REPL_NUM)
         res = rescNum.value[0]
+        if genQueryOut is not None:
+            genQueryOut.release()
     else:
+        if genQueryOut is not None:
+            genQueryOut.release()
         return ""
     
     return res
@@ -391,10 +395,10 @@ def getDataObjReplicaNumber(conn, coll_name, data_name, resc_name):
 # continueInx > 0 after genQuery call
 def getDataObjRescNames(conn, coll_name, data_name):
     genQueryInp = genQueryInp_t()
-    addInxVal(genQueryInp.sqlCondInp, COL_COLL_NAME, "='%s'" % coll_name)
-    addInxVal(genQueryInp.sqlCondInp, COL_DATA_NAME, "='%s'" % data_name)
-    addInxIval(genQueryInp.selectInp, COL_D_RESC_NAME, 1)
-    addInxIval(genQueryInp.selectInp, COL_R_RESC_ID, ORDER_BY)
+    genQueryInp.initSqlCondInp([COL_COLL_NAME, COL_DATA_NAME], 
+                               ["='%s'" % coll_name, "='%s'" % data_name], 2)
+    genQueryInp.initSelectInp([COL_D_RESC_NAME, COL_R_RESC_ID], 
+                              [1, ORDER_BY], 2)
     genQueryInp.maxRows = MAX_SQL_ROWS
     genQueryOut = rcGenQuery(conn, genQueryInp)
     rescNum = getSqlResultByInx(genQueryOut, COL_DATA_REPL_NUM)
@@ -402,7 +406,11 @@ def getDataObjRescNames(conn, coll_name, data_name):
     if genQueryOut and genQueryOut.rowCnt >= 0:
         for i in xrange(genQueryOut.rowCnt):
             res.append(genQueryOut.getSqlResultByInxIdx(COL_D_RESC_NAME, i))
+        if genQueryOut is not None:
+            genQueryOut.release()
     else:
+        if genQueryOut is not None:
+            genQueryOut.release()
         return ""
     
     return res
@@ -410,16 +418,24 @@ def getDataObjRescNames(conn, coll_name, data_name):
 # Returns the size of a data object
 def getDataObjSize(conn, coll_name, data_name, resc_name):
     genQueryInp = genQueryInp_t()
-    addInxVal(genQueryInp.sqlCondInp, COL_COLL_NAME, "='%s'" % coll_name)
-    addInxVal(genQueryInp.sqlCondInp, COL_DATA_NAME, "='%s'" % data_name)  
-    addInxVal(genQueryInp.sqlCondInp, COL_D_RESC_NAME, "='%s'" % resc_name)
-    addInxIval(genQueryInp.selectInp, COL_DATA_SIZE, 1)
+    genQueryInp.initSqlCondInp([COL_COLL_NAME, COL_DATA_NAME, COL_D_RESC_NAME], 
+                               ["='%s'" % coll_name, "='%s'" % data_name,
+                               "='%s'" % resc_name], 3)
+    genQueryInp.initSelectInp([COL_DATA_SIZE], [1], 1)
     genQueryInp.maxRows = MAX_SQL_ROWS
     genQueryOut = rcGenQuery(conn, genQueryInp)
     if genQueryOut and genQueryOut.rowCnt >= 0:
         sizeNum = getSqlResultByInx(genQueryOut, COL_DATA_SIZE)
-        return int(sizeNum.value)
+        try:
+            sizeInt = int(sizeNum.value)
+        except ValueError:
+            sizeInt = 0
+        if genQueryOut is not None:
+            genQueryOut.release()
+        return sizeInt
     else:
+        if genQueryOut is not None:
+            genQueryOut.release()
         return 0
 
 # Get the file Info with the name and resource, query the ICAT database and
@@ -860,8 +876,10 @@ def irodsCopy(conn, path, new_path, force=False, resc=None):
     lastStatus = rcDataObjCopy(conn, dataObjCopyInp)
     return lastStatus
 
-def irodsMove(conn, old_path, new_path):
+def irodsMove(conn, old_path, new_path, force=False):
     global lastStatus
+    if force:
+        deleteFile(conn, new_path)
     dataObjRenameInp = dataObjCopyInp_t()
     dataObjRenameInp.srcDataObjInp.oprType = RENAME_DATA_OBJ
     dataObjRenameInp.srcDataObjInp.objPath = old_path
@@ -915,18 +933,24 @@ def queryToFormatDictList(conn, selectInp, sqlCondInp, formatStr):
     l = []
     genQueryInp.maxRows = MAX_SQL_ROWS
     genQueryInp.continueInx = 0
-    genQueryInp.condInput.len = 0
-    genQueryInp.selectInp = selectInp
-    genQueryInp.sqlCondInp = sqlCondInp
+    #genQueryInp.condInput.len = 0
+    genQueryInp.setSelectInp(selectInp)
+    genQueryInp.setSqlCondInp(sqlCondInp)
     genQueryOut = rcGenQuery(conn, genQueryInp)
     if not genQueryOut:
         return l
     addResultToFormatDictList(genQueryOut, formatStr, l)
     while genQueryOut and genQueryOut.continueInx > 0:
         genQueryInp.continueInx = genQueryOut.continueInx
+        if genQueryOut is not None:
+            genQueryOut.release()
         genQueryOut = rcGenQuery(conn, genQueryInp)
         if genQueryOut:
             addResultToFormatDictList(genQueryOut, l)
+    
+    if genQueryOut is not None:
+        genQueryOut.release()
+        
     return l
 
 def queryToTupleList(conn, selectInp, sqlCondInp):
@@ -934,18 +958,23 @@ def queryToTupleList(conn, selectInp, sqlCondInp):
     l = []
     genQueryInp.maxRows = MAX_SQL_ROWS
     genQueryInp.continueInx = 0
-    genQueryInp.condInput.len = 0
-    genQueryInp.selectInp = selectInp
-    genQueryInp.sqlCondInp = sqlCondInp
+    #genQueryInp.condInput.len = 0
+    genQueryInp.setSelectInp(selectInp)
+    genQueryInp.setSqlCondInp(sqlCondInp)
     genQueryOut = rcGenQuery(conn, genQueryInp)
     if not genQueryOut:
         return l
     addResultToTupleList(genQueryOut, l)
     while genQueryOut and genQueryOut.continueInx > 0:
         genQueryInp.continueInx = genQueryOut.continueInx
+        if genQueryOut is not None:
+            genQueryOut.release()
         genQueryOut = rcGenQuery(conn, genQueryInp)
         if genQueryOut:
             addResultToTupleList(genQueryOut, l)
+    
+    if genQueryOut is not None:
+        genQueryOut.release()
     return l
 
 def rmCollUserMetadata(conn, path, name, value, units=""):

@@ -25,6 +25,46 @@ typedef struct {
   unsigned char buffer[64];
 } MD5_CTX;
 
+/**********************************************************************/
+
+%extend MD5_CTX{
+
+    void set_MD5_CTX_state(int idx, UINT4 el) {
+        if ( (idx >= 0) && (idx < 4) ) {
+            $self->state[idx] = el;
+        }
+    }
+    
+    UINT4 get_MD5_CTX_state(int idx) {
+        if ( (idx >= 0) && (idx < 4) ) {
+            return $self->state[idx];
+        }
+        return 0;
+    }
+
+    void set_MD5_CTX_count(int idx, UINT4 el) {
+        if ( (idx >= 0) && (idx < 2) ) {
+            $self->count[idx] = el;
+        }
+    }
+    
+    UINT4 get_MD5_CTX_count(int idx) {
+        if ( (idx >= 0) && (idx < 2) ) {
+            return $self->count[idx];
+        }
+        return 0;
+    }
+
+    void set_MD5_CTX_buffer(char * md5Buf) {
+        strncpy((char *)$self->buffer, md5Buf, 64);
+    }
+    
+    char * get_MD5_CTX_buffer() {
+        return (char*) $self->buffer;
+    }
+    
+}
+
 /*****************************************************************************/
 
 int chksumLocFile (char *fileName, char *chksumStr, int use_sha256);
@@ -32,7 +72,8 @@ int chksumLocFile (char *fileName, char *chksumStr, int use_sha256);
 /*****************************************************************************/
 
 %inline %{
-char * MD5Digest(char * md5Buf) {
+
+PyObject * MD5Digest(char * md5Buf) {
     MD5_CTX context;
     unsigned char * digest = (unsigned char *) malloc(sizeof(unsigned char) * (RESPONSE_LEN+2));
     
@@ -40,7 +81,7 @@ char * MD5Digest(char * md5Buf) {
     MD5Update(&context, (unsigned char*) md5Buf, CHALLENGE_LEN+MAX_PASSWORD_LEN);
     MD5Final(digest, &context);
     
-    return (char *) digest;
+    return Py_BuildValue("s", (char *) digest);
 }
 %}
 

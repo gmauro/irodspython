@@ -24,27 +24,14 @@ from irods import *
 class testRodsMeta(iRODSTestCase):
 
     def test_modDataObjMeta_t(self):
-        dataObjInfo = dataObjInfo_t()
-        regParam = keyValPair_t()
-        tmp = create_modDataObjMeta_t(dataObjInfo, regParam)
-        #self.assertEqual(tmp.dataObjInfo, dataObjInfo)
-        #self.assertEqual(tmp.regParam, regParam)
+        v1 = create_modDataObjMeta_t()
+        v2 = create_modDataObjMeta_t()
+        self.assertTrue(test_modDataObjMeta_t(v1, v2))
 
     def test_modAVUMetadataInp_t(self):
-        dataObjInfo = dataObjInfo_t()
-        regParam = keyValPair_t()
-        tmp = create_modAVUMetadataInp_t("arg0", "arg1", "arg2", "arg3", "arg4", 
-                                         "arg5", "arg6", "arg7", "arg8", "arg9")
-        self.assertEqual(tmp.arg0, "arg0")
-        self.assertEqual(tmp.arg1, "arg1")
-        self.assertEqual(tmp.arg2, "arg2")
-        self.assertEqual(tmp.arg3, "arg3")
-        self.assertEqual(tmp.arg4, "arg4")
-        self.assertEqual(tmp.arg5, "arg5")
-        self.assertEqual(tmp.arg6, "arg6")
-        self.assertEqual(tmp.arg7, "arg7")
-        self.assertEqual(tmp.arg8, "arg8")
-        self.assertEqual(tmp.arg9, "arg9")
+        v1 = create_modAVUMetadataInp_t()
+        v2 = create_modAVUMetadataInp_t()
+        self.assertTrue(test_modAVUMetadataInp_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

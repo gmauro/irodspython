@@ -24,32 +24,14 @@ from irods import *
 class testRodsAdmin(iRODSTestCase):
 
     def test_generalAdminInp_t(self):
-        tmp = create_generalAdminInp_t("arg0", "arg1", "arg2", "arg3", "arg4", 
-                                       "arg5", "arg6", "arg7", "arg8", "arg9")
-        self.assertEqual(tmp.arg0, "arg0")
-        self.assertEqual(tmp.arg1, "arg1")
-        self.assertEqual(tmp.arg2, "arg2")
-        self.assertEqual(tmp.arg3, "arg3")
-        self.assertEqual(tmp.arg4, "arg4")
-        self.assertEqual(tmp.arg5, "arg5")
-        self.assertEqual(tmp.arg6, "arg6")
-        self.assertEqual(tmp.arg7, "arg7")
-        self.assertEqual(tmp.arg8, "arg8")
-        self.assertEqual(tmp.arg9, "arg9")
+        v1 = create_generalAdminInp_t()
+        v2 = create_generalAdminInp_t()
+        self.assertTrue(test_generalAdminInp_t(v1, v2))
 
     def test_userAdminInp_t(self):
-        tmp = create_userAdminInp_t("arg0", "arg1", "arg2", "arg3", "arg4", 
-                                    "arg5", "arg6", "arg7", "arg8", "arg9")
-        self.assertEqual(tmp.arg0, "arg0")
-        self.assertEqual(tmp.arg1, "arg1")
-        self.assertEqual(tmp.arg2, "arg2")
-        self.assertEqual(tmp.arg3, "arg3")
-        self.assertEqual(tmp.arg4, "arg4")
-        self.assertEqual(tmp.arg5, "arg5")
-        self.assertEqual(tmp.arg6, "arg6")
-        self.assertEqual(tmp.arg7, "arg7")
-        self.assertEqual(tmp.arg8, "arg8")
-        self.assertEqual(tmp.arg9, "arg9")
+        v1 = create_userAdminInp_t()
+        v2 = create_userAdminInp_t()
+        self.assertTrue(test_userAdminInp_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

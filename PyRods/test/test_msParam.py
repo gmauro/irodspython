@@ -24,31 +24,15 @@ from irods import *
 class testMsParam(iRODSTestCase):
 
     def test_msParam_t(self):
-        inpOutBuf = bytesBuf_t()
-        tmp = create_msParam_t("label", "type", #"inOutStruct", 
-                               inpOutBuf)
-        
-        self.assertEqual(tmp.label, "label")
-        self.assertEqual(tmp.type, "type")
-        #self.assertEqual(tmp.inOutStruct, "inOutStruct")
-        #self.assertEqual(tmp.inpOutBuf, inpOutBuf)
+        v1 = create_msParam_t()
+        v2 = create_msParam_t()
+        self.assertTrue(test_msParam_t(v1, v2))
         
 
     def test_msParamArray_t(self):
-        tmp = create_msParamArray_t(12, 12)# msParam)
-        self.assertEqual(tmp.len, 12)
-        self.assertEqual(tmp.oprType, 12)
-        #self.assertEqual(tmp.msParam, msParam)
-
-    def test_msParam_t_unicode(self):
-        inpOutBuf = bytesBuf_t()
-        tmp = create_msParam_t(u"label", u"type", #"inOutStruct", 
-                               inpOutBuf)
-        
-        self.assertEqual(tmp.label, u"label")
-        self.assertEqual(tmp.type, u"type")
-        #self.assertEqual(tmp.inOutStruct, "inOutStruct")
-        #self.assertEqual(tmp.inpOutBuf, inpOutBuf)
+        v1 = create_msParamArray_t()
+        v2 = create_msParamArray_t()
+        self.assertTrue(test_msParamArray_t(v1, v2))
 
 
 def suite():

@@ -24,66 +24,49 @@ from irods import *
 class testRodsDef(iRODSTestCase):
 
     def test_bytesBuf_t(self):
-        tmp = create_bytesBuf_t("bytesBuf_t")
-        self.assertEqual(tmp.getBuf(), "bytesBuf_t")
-
+        v1 = create_bytesBuf_t()
+        v2 = create_bytesBuf_t()
+        self.assertTrue(test_bytesBuf_t(v1, v2))
+ 
     def test_getTempPasswordOut_t(self):
-        tmp = create_getTempPasswordOut_t("stringToHashWith")
-        self.assertEqual(tmp.stringToHashWith, "stringToHashWith")
-
+        v1 = create_getTempPasswordOut_t()
+        v2 = create_getTempPasswordOut_t()
+        self.assertTrue(test_getTempPasswordOut_t(v1, v2))
+ 
     def test_rodsDirent_t(self):
-        tmp = create_rodsDirent_t(12, 12, 12, 12, "d_name")
-        self.assertEqual(tmp.d_offset, 12)
-        self.assertEqual(tmp.d_ino, 12)
-        self.assertEqual(tmp.d_reclen, 12)
-        self.assertEqual(tmp.d_namlen, 12)
-        self.assertEqual(tmp.d_name, "d_name")
-
+        v1 = create_rodsDirent_t()
+        v2 = create_rodsDirent_t()
+        self.assertTrue(test_rodsDirent_t(v1, v2))
+ 
     def test_rodsHostAddr_t(self):
-        tmp = create_rodsHostAddr_t("hostAddr", "zoneName", 12, 12)
-        self.assertEqual(tmp.hostAddr, "hostAddr")
-        self.assertEqual(tmp.zoneName, "zoneName")
-        self.assertEqual(tmp.portNum, 12)
-        self.assertEqual(tmp.dummyInt, 12)
-
+        v1 = create_rodsHostAddr_t()
+        v2 = create_rodsHostAddr_t()
+        self.assertTrue(test_rodsHostAddr_t(v1, v2))
+ 
     def test_rodsRestart_t(self):
-        tmp = create_rodsRestart_t("restartFile", 12, 12, "collection", 
-                                   "lastDonePath", "oprType", 12, 12)
-        self.assertEqual(tmp.restartFile, "restartFile")
-        self.assertEqual(tmp.fd, 12)
-        self.assertEqual(tmp.doneCnt, 12)
-        self.assertEqual(tmp.collection, "collection")
-        self.assertEqual(tmp.lastDonePath, "lastDonePath")
-        self.assertEqual(tmp.oprType, "oprType")
-        self.assertEqual(tmp.curCnt, 12)
-        self.assertEqual(tmp.restartState, 12)
-
+        v1 = create_rodsRestart_t()
+        v2 = create_rodsRestart_t()
+        self.assertTrue(test_rodsRestart_t(v1, v2))
+ 
     def test_rodsStat_t(self):
-        tmp = create_rodsStat_t(12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 
-                                12)
-        self.assertEqual(tmp.st_size, 12)
-        self.assertEqual(tmp.st_dev, 12)
-        self.assertEqual(tmp.st_ino, 12)
-        self.assertEqual(tmp.st_mode, 12)
-        self.assertEqual(tmp.st_nlink, 12)
-        self.assertEqual(tmp.st_uid, 12)
-        self.assertEqual(tmp.st_gid, 12)
-        self.assertEqual(tmp.st_rdev, 12)
-        self.assertEqual(tmp.st_atim, 12)
-        self.assertEqual(tmp.st_mtim, 12)
-        self.assertEqual(tmp.st_ctim, 12)
-        self.assertEqual(tmp.st_blksize, 12)
-        self.assertEqual(tmp.st_blocks, 12)
+        v1 = create_rodsStat_t()
+        v2 = create_rodsStat_t()
+        self.assertTrue(test_rodsStat_t(v1, v2))
 
     def test_version_t(self):
-        tmp = create_version_t(12, "relVersion", "apiVersion", 12, "reconnAddr", 
-                               12)
-        self.assertEqual(tmp.status, 12)
-        self.assertEqual(tmp.relVersion, "relVersion")
-        self.assertEqual(tmp.apiVersion, "apiVersion")
-        self.assertEqual(tmp.reconnPort, 12)
-        self.assertEqual(tmp.reconnAddr, "reconnAddr")
-        self.assertEqual(tmp.cookie, 12)
+        v1 = create_version_t()
+        v2 = create_version_t()
+        self.assertTrue(test_version_t(v1, v2))
+
+    def test_transferStat_t(self):
+        v1 = create_transferStat_t()
+        v2 = create_transferStat_t()
+        self.assertTrue(test_transferStat_t(v1, v2))
+
+    def test_operProgress_t(self):
+        v1 = create_operProgress_t()
+        v2 = create_operProgress_t()
+        self.assertTrue(test_operProgress_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

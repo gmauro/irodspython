@@ -17,10 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "modAVUMetadata.h"
-#include "modDataObjMeta.h"
-%}
 
 /*****************************************************************************/
 
@@ -28,6 +24,17 @@ typedef struct {
     dataObjInfo_t *dataObjInfo;
     keyValPair_t *regParam;
 } modDataObjMeta_t;
+
+%extend modDataObjMeta_t {
+    
+    ~modDataObjMeta_t() {
+        if ($self) {
+            delete_DataObjInfo($self->dataObjInfo);
+            delete_KeyValPair($self->regParam);
+            free($self);
+        }
+    }
+}
 
 typedef struct {
    char *arg0;
@@ -41,6 +48,25 @@ typedef struct {
    char *arg8;
    char *arg9;
 } modAVUMetadataInp_t;
+
+%extend modAVUMetadataInp_t {
+    
+    ~modAVUMetadataInp_t() {
+        if ($self) {
+            free($self->arg0);
+            free($self->arg1);
+            free($self->arg2);
+            free($self->arg3);
+            free($self->arg4);
+            free($self->arg5);
+            free($self->arg6);
+            free($self->arg7);
+            free($self->arg8);
+            free($self->arg9);
+            free($self);
+        }
+    }
+}
 
 /*****************************************************************************/
 

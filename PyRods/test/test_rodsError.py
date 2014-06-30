@@ -24,9 +24,14 @@ from irods import *
 class testRodsError(iRODSTestCase):
 
     def test_rErrMsg_t(self):
-        tmp = create_rErrMsg_t(12, "msg")
-        self.assertEqual(tmp.status, 12)
-        self.assertEqual(tmp.msg, "msg")
+        v1 = create_rErrMsg_t()
+        v2 = create_rErrMsg_t()
+        self.assertTrue(test_rErrMsg_t(v1, v2))
+
+    def test_rError_t(self):
+        v1 = create_rError_t()
+        v2 = create_rError_t()
+        self.assertTrue(test_rError_t(v1, v2))
 
 def suite():
     suite = unittest.TestSuite()

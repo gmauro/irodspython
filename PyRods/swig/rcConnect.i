@@ -64,11 +64,53 @@ typedef struct {
 
 %extend rcComm_t {
 
+    ~rcComm_t() {
+        if ($self) {
+            free($self->svrVersion);
+            free($self->rError);
+            free($self);
+        }
+    }
+
     int disconnect() {
         return rcDisconnect($self);
     }
 
 }
+
+typedef enum {
+    PROCESSING_STATE,
+    RECEIVING_STATE,
+    SENDING_STATE,
+    CONN_WAIT_STATE
+} procState_t;
+
+
+typedef enum {
+    FILE_RESTART_OFF,
+    FILE_RESTART_ON
+} fileRestartFlag_t;
+
+typedef enum {
+    FILE_NOT_RESTART,
+    FILE_RESTARTED
+} fileRestartStatus_t;
+
+typedef struct {
+    char fileName[MAX_NAME_LEN];
+    char objPath[MAX_NAME_LEN];
+    int numSeg;
+    fileRestartStatus_t status;
+    rodsLong_t fileSize;
+    dataSeg_t dataSeg[MAX_NUM_CONFIG_TRAN_THR];
+} fileRestartInfo_t;
+
+typedef struct {
+    fileRestartFlag_t flags;
+    rodsLong_t writtenSinceUpdated;
+    char infoFile[MAX_NAME_LEN];
+    fileRestartInfo_t info;
+} fileRestart_t;
 
 /*****************************************************************************/
 

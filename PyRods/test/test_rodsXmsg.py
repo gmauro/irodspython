@@ -24,42 +24,29 @@ from irods import *
 class testRodsXmsg(iRODSTestCase):
 
     def test_getXmsgTicketInp_t(self):
-        tmp = create_getXmsgTicketInp_t(12, 12)
-        self.assertEqual(tmp.expireTime, 12)
-        self.assertEqual(tmp.flag, 12)
+        v1 = create_getXmsgTicketInp_t()
+        v2 = create_getXmsgTicketInp_t()
+        self.assertTrue(test_getXmsgTicketInp_t(v1, v2))
 
     def test_rcvXmsgInp_t(self):
-        tmp = create_rcvXmsgInp_t(12, 12, 12, "msgCondition")
-        self.assertEqual(tmp.rcvTicket, 12)
-        self.assertEqual(tmp.msgNumber, 12)
-        self.assertEqual(tmp.seqNumber, 12)
-        self.assertEqual(tmp.msgCondition, "msgCondition")
-
+        v1 = create_rcvXmsgInp_t()
+        v2 = create_rcvXmsgInp_t()
+        self.assertTrue(test_rcvXmsgInp_t(v1, v2))
+ 
     def test_rcvXmsgOut_t(self):
-        tmp = create_rcvXmsgOut_t("msgType", "sendUserName", "sendAddr", 12, 12,
-                                  "msg")
-        self.assertEqual(tmp.msgType, "msgType")
-        self.assertEqual(tmp.sendUserName, "sendUserName")
-        self.assertEqual(tmp.sendAddr, "sendAddr")
-        self.assertEqual(tmp.msgNumber, 12)
-        self.assertEqual(tmp.seqNumber, 12)
-        self.assertEqual(tmp.msg, "msg")
-
+        v1 = create_rcvXmsgOut_t()
+        v2 = create_rcvXmsgOut_t()
+        self.assertTrue(test_rcvXmsgOut_t(v1, v2))
+ 
     def test_xmsgTicketInfo_t(self):
-        tmp = create_xmsgTicketInfo_t(12, 12, 12, 12)
-        self.assertEqual(tmp.sendTicket, 12)
-        self.assertEqual(tmp.rcvTicket, 12)
-        self.assertEqual(tmp.expireTime, 12)
-        self.assertEqual(tmp.flag, 12)
-
+        v1 = create_xmsgTicketInfo_t()
+        v2 = create_xmsgTicketInfo_t()
+        self.assertTrue(test_xmsgTicketInfo_t(v1, v2))
+ 
     def test_sendXmsgInp_t(self):
-        ticket = xmsgTicketInfo_t()
-        #sendXmsgInfo = sendXmsgInfo_t
-        tmp = create_sendXmsgInp_t(ticket, "sendAddr", #sendXmsgInfo
-                                   )
-        #self.assertEqual(tmp.ticket, ticket)
-        self.assertEqual(tmp.sendAddr, "sendAddr")
-        #self.assertEqual(tmp.sendXmsgInfo, sendXmsgInfo)
+        v1 = create_sendXmsgInp_t()
+        v2 = create_sendXmsgInp_t()
+        self.assertTrue(test_sendXmsgInp_t(v1, v2))
 
 
 def suite():

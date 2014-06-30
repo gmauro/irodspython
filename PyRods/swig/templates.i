@@ -37,7 +37,7 @@
     if (PyNumber_Check(o)) {
       $1[i] = (int) PyInt_AsLong(o);
     } else {
-      PyErr_SetString(PyExc_ValueError,"Sequence elements must be integers");      
+      PyErr_SetString(PyExc_ValueError,"Sequence elements must be integers");
       free($1);
       return NULL;
     }

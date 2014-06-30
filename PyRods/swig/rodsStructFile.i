@@ -17,26 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "structFileBundle.h"
-#include "structFileExtract.h"
-#include "subStructFileClose.h"
-#include "subStructFileClosedir.h"
-#include "subStructFileCreate.h"
-#include "subStructFileFstat.h"
-#include "subStructFileGet.h"
-#include "subStructFileLseek.h"
-#include "subStructFileMkdir.h"
-#include "subStructFileOpen.h"
-#include "subStructFileOpendir.h"
-#include "subStructFilePut.h"
-#include "subStructFileReaddir.h"
-#include "subStructFileRename.h"
-#include "subStructFileRmdir.h"
-#include "subStructFileTruncate.h"
-#include "subStructFileUnlink.h"
-#include "subStructFileWrite.h"
-%}
 
 /*****************************************************************************/
 
@@ -48,6 +28,15 @@ typedef struct StructFileExtAndRegInp {
     keyValPair_t condInput;
 } structFileExtAndRegInp_t;
 
+%extend StructFileExtAndRegInp {
+    ~StructFileExtAndRegInp() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct StructFileOprInp {
     rodsHostAddr_t addr;
     int oprType;
@@ -55,6 +44,17 @@ typedef struct StructFileOprInp {
     specColl_t *specColl;
     keyValPair_t condInput;
 } structFileOprInp_t;
+
+%extend StructFileOprInp {
+    
+    ~StructFileOprInp() {
+        if ($self) {
+            delete_SpecColl($self->specColl);
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
 
 typedef struct SubStructFileFdOpr {
     rodsHostAddr_t addr;
@@ -75,6 +75,15 @@ typedef struct SubStructFileRenameInp {
     subFile_t subFile;
     char newSubFilePath[MAX_NAME_LEN];
 } subStructFileRenameInp_t;
+
+%extend SubStructFileRenameInp {
+    ~SubStructFileRenameInp() {
+        if ($self) {
+            clear_Subfile(&$self->subFile);
+            free($self);
+        }
+    }
+}
 
 /*****************************************************************************/
 

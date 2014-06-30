@@ -16,7 +16,10 @@
  *
  * Author       : Jerome Fuselier
  */
- 
+
+
+typedef unsigned int UINT4;
+
 #define CHALLENGE_LEN 64
 #define RESPONSE_LEN 16
 

@@ -17,10 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "getMiscSvrInfo.h"
-#include "objStat.h"
-%}
 
 /*****************************************************************************/
 
@@ -61,6 +57,19 @@ typedef struct DataObjInfo {
     struct DataObjInfo *next;
 } dataObjInfo_t;
 
+%extend DataObjInfo {
+    ~DataObjInfo() {
+        if ($self) {
+            free($self->rescInfo);
+            delete_SpecColl($self->specColl);
+            delete_DataObjInfo($self->next);
+            clearKeyVal(&$self->condInput);
+            free($self);
+       }
+    }
+}
+
+
 typedef struct MiscSvrInfo {
     int serverType;
     unsigned int serverBootTime;
@@ -82,6 +91,41 @@ typedef struct rodsObjStat {
     specColl_t          *specColl;
 } rodsObjStat_t;
 
+%extend rodsObjStat {
+
+    ~rodsObjStat() {
+        if ($self != NULL) {
+            delete_SpecColl($self->specColl);
+            free($self);
+        }
+    }
+
+};
+
+
+%{
+int MyClearTagStruct(tagStruct_t *tag)
+{
+    int i;
+
+    if (tag == NULL || tag->len <= 0)
+		return (0);
+
+    for (i = 0; i < tag->len; i++) {
+		free(tag->preTag[i]);
+		free(tag->postTag[i]);
+		free(tag->keyWord[i]);
+    }
+	
+	free(tag->preTag);
+	free(tag->postTag);
+	free(tag->keyWord);    
+	memset(tag, 0, sizeof (tagStruct_t));
+    return(0);
+}
+
+%}
+
 %ignore TagStruct::preTag;
 %ignore TagStruct::postTag;
 %ignore TagStruct::keyWord;
@@ -94,7 +138,15 @@ typedef struct TagStruct {
 } tagStruct_t;
 
 
-%extend tagStruct_t {
+%extend TagStruct {
+    
+    ~TagStruct() {
+        if ($self) {
+            MyClearTagStruct($self);
+            free($self);
+           }
+       }
+    
     
     char ** getPreTag(size_t *len) {
         *len = $self->len;
@@ -134,6 +186,21 @@ typedef struct TagStruct {
     }
 
 }
+    
+
+
+typedef enum {
+    NO_SPEC_COLL,
+    STRUCT_FILE_COLL,
+    MOUNTED_COLL,
+    LINKED_COLL
+} specCollClass_t;
+
+typedef enum {
+    HAAW_STRUCT_FILE_T,
+    TAR_STRUCT_FILE_T, 
+    MSSO_STRUCT_FILE_T 
+} structFileType_t;
 
 typedef struct SpecColl {
     specCollClass_t collClass;
@@ -147,6 +214,16 @@ typedef struct SpecColl {
     int replNum;
 } specColl_t;
 
+%extend SpecColl {
+
+    ~SpecColl() {
+        if ($self != NULL) {
+            free($self);
+        }
+    }
+
+};
+
 typedef struct Subfile {
     rodsHostAddr_t addr;
     char subFilePath[MAX_NAME_LEN];
@@ -156,10 +233,28 @@ typedef struct Subfile {
     specColl_t *specColl;
 } subFile_t;
 
+%extend Subfile {
+    ~Subfile() {
+        if ($self) {
+            delete_SpecColl($self->specColl);
+            free($self);
+        }
+    }
+}
+
+%{
+void clear_Subfile(subFile_t * subFile) {
+    if (subFile) {
+            delete_SpecColl(subFile->specColl);
+        }
+}
+%}
+
 /*****************************************************************************/
 
 %ignore KeyValPair::keyWord;
 %ignore KeyValPair::value;
+%ignore KeyValPair::len;
 
 typedef struct KeyValPair {
     int len;
@@ -167,33 +262,29 @@ typedef struct KeyValPair {
     char **value;
 } keyValPair_t;
 
-%extend keyValPair_t {
-  
-    void init(char **keyWord, char **value, int len) { 
+%extend KeyValPair {
+
+    ~KeyValPair() {
+        if ($self) {
+            clearKeyVal($self);
+            free($self);
+           }
+       }
+    
+    void init(char **keyWord, char **value, int len) {
         int i;
-        
-        $self->keyWord = (char **) malloc((len+1)*sizeof(char*));
-        $self->value = (char **) malloc((len+1)*sizeof(char*));
-            
-        for (i = 0 ; i < len ; i++) { 
-            size_t size = (strlen(keyWord[i])+1)*sizeof(char);
-            $self->keyWord[i] = (char *) malloc(size);
-            strcpy($self->keyWord[i], keyWord[i]);
-            
-            size = (strlen(value[i])+1)*sizeof(char);
-            $self->value[i] = (char *) malloc(size);
-            strcpy($self->value[i], value[i]);
+        clearKeyVal($self);
+        memset ($self, 0, sizeof(keyValPair_t));
+        for (i=0 ; i<len ; i++) {
+            addKeyVal($self, keyWord[i], value[i]);
         }
-        $self->keyWord[len] = 0;
-        $self->value[len] = 0;
-        $self->len = len;
     }
     
     int getLen() {
         return $self->len;
     }
     
-    char ** getKeyWord(size_t *len) {
+    char ** getKeyWords(size_t *len) {
         *len = $self->len;
         return $self->keyWord;
     }
@@ -205,7 +296,7 @@ typedef struct KeyValPair {
             return NULL;
     }
     
-    char ** getValue(size_t *len) {
+    char ** getValues(size_t *len) {
         *len = $self->len;
         return $self->value;
     }
@@ -217,23 +308,39 @@ typedef struct KeyValPair {
             return NULL;
     }
     
-    char * __str__() {
-        char * str = (char *)malloc(1024 * sizeof(char));
+    void clear() {
+        clearKeyVal($self);
+    }
+
+    int add(char *keyWord, char *value) {
+        return addKeyVal($self, keyWord, value);
+    }
+
+    char * getValByKey(char *keyWord) {
+        return getValByKey($self, keyWord);
+    }
+
+    PyObject * __str__() {
+        char str[1024];
         strcpy (str,"keyValPair_t:\n");
         for (int i = 0 ; i < $self->len ; i ++) {
             char tmp[1024];
             sprintf(tmp, " %s - %s\n", $self->keyWord[i], $self->value[i]); 
             strcat(str, tmp);
         }
-        return str;
+        return  Py_BuildValue("s", str);
     }
 
 }
 
+
+
 /*****************************************************************************/
+
 
 %ignore InxIvalPair::inx;
 %ignore InxIvalPair::value;
+%ignore InxIvalPair::len;
 
 typedef struct InxIvalPair {
     int len;
@@ -241,24 +348,29 @@ typedef struct InxIvalPair {
     int *value;
 } inxIvalPair_t;
 
-%extend inxIvalPair_t {
+
+%extend InxIvalPair {
    
-    void init(int *inx, int *value, int len) { 
-        int i;
-        
-        $self->inx = (int *) malloc((len+1)*sizeof(int));
-        $self->value = (int *) malloc((len+1)*sizeof(int));
-            
-        for (i = 0 ; i < len ; i++) {
-            $self->inx[i] = inx[i];
-            $self->value[i] = value[i];
-                    
+   ~InxIvalPair() {
+        if ($self != NULL) {
+            clearInxIval($self);
+            free($self);
         }
-        $self->inx[len] = 0;
-        $self->value[len] = 0;
-        $self->len = len;
    }
     
+    void init(int *inx, int *value, int len) {
+        int i;
+        clearInxIval($self);
+        memset ($self, 0, sizeof(inxIvalPair_t));
+        for (i=0 ; i<len ; i++) {
+            addInxIval($self, inx[i], value[i]);
+        }
+    }
+
+    void clear() {
+        clearInxIval($self);
+    }
+
    int getLen() {
         return $self->len;
    }
@@ -272,24 +384,35 @@ typedef struct InxIvalPair {
         *len = $self->len;
         return $self->value;
     }
- 
-    char * __str__() {
-        char * str = (char *)malloc(1024 * sizeof(char));
-        strcpy (str,"inxIvalPair_t:\n");
+
+    int add(int inx, int value) {
+        return addInxIval($self, inx, value);
+    }
+
+    int getIvalByInx(int inx) {
+        int out_value = 0;
+        getIvalByInx($self, inx, &out_value);
+        return out_value;
+    }
+
+    PyObject * __str__() {
+        char str[1024];
+        strcpy (str,"inxIValPair_t:\n");
         for (int i = 0 ; i < $self->len ; i ++) {
             char tmp[1024];
             sprintf(tmp, " %d - %d\n", $self->inx[i], $self->value[i]); 
             strcat(str, tmp);
         }
-        return str;
+        return  Py_BuildValue("s", str);
     }
-
 }
+
 
 /*****************************************************************************/
 
 %ignore InxValPair::inx;
 %ignore InxValPair::value;
+%ignore InxValPair::len;
 
 typedef struct InxValPair {
     int len;
@@ -297,22 +420,26 @@ typedef struct InxValPair {
     char **value;
 } inxValPair_t;
 
-%extend inxValPair_t {
-  
-    void init(int *inx, char **value, int len) {
-        $self->inx = (int *) malloc((len+1)*sizeof(int));
-        $self->value = (char **) malloc((len+1)*sizeof(char*));
-            
-        for (int i = 0 ; i < len ; i++) { 
-            size_t size = (strlen(value[i])+1)*sizeof(char);
-            $self->value[i] = (char *) malloc(size);
-            strcpy($self->value[i], value[i]);
-            
-            $self->inx[i] = inx[i];
+%extend InxValPair {
+
+    ~InxValPair() {
+        if ($self != NULL) {
+            clearInxVal($self);
+            free($self);
         }
-        $self->inx[len] = 0;
-        $self->value[len] = 0;
-        $self->len = len;
+    }
+    
+    void init(int *inx, char **value, int len) {
+        int i;
+        clearInxVal($self);
+        memset ($self, 0, sizeof(inxValPair_t));
+        for (i=0 ; i<len ; i++) {
+            addInxVal($self, inx[i], value[i]);
+        }
+    }
+    
+    void clear() {
+        clearInxVal($self);
     }
     
    int getLen() {
@@ -328,19 +455,56 @@ typedef struct InxValPair {
         *len = $self->len;
         return $self->value;
     }
- 
-    char * __str__() {
-        char * str = (char *)malloc(1024 * sizeof(char));
+
+    int add(int inx, char *value) {
+        return addInxVal($self, inx, value);
+    }
+
+    char * getValByInx(int inx) {
+        return getValByInx($self, inx);
+    }
+
+    PyObject * __str__() {
+        char str[1024];
         strcpy (str,"inxValPair_t:\n");
         for (int i = 0 ; i < $self->len ; i ++) {
             char tmp[1024];
             sprintf(tmp, " %d - %s\n", $self->inx[i], $self->value[i]); 
             strcat(str, tmp);
         }
-        return str;
+        return  Py_BuildValue("s", str);
     }
 
 }
+
+
+typedef struct RescInfo
+{
+    char rescName[NAME_LEN];
+    rodsLong_t rescId;
+    char zoneName[NAME_LEN];
+    char rescLoc[NAME_LEN];
+    char rescType[NAME_LEN];
+    int rescTypeInx;
+    int rescClassInx;
+    int rescStatus;
+    int paraOpr;
+    char rescClass[NAME_LEN];
+    char rescVaultPath[MAX_NAME_LEN];
+    char rescInfo[LONG_NAME_LEN];
+    char rescComments[LONG_NAME_LEN];
+    char gateWayAddr[NAME_LEN];
+    rodsLong_t rescMaxObjSize;
+    rodsLong_t freeSpace;
+    char freeSpaceTimeStamp[TIME_LEN];
+    time_t freeSpaceTime;
+    char rescCreate[TIME_LEN];
+    char rescModify[TIME_LEN];
+    void *rodsServerHost;
+    rodsLong_t quotaLimit;
+    rodsLong_t quotaOverrun;
+} rescInfo_t;
+
 
 /*****************************************************************************/
 

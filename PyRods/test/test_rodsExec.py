@@ -24,68 +24,34 @@ from irods import *
 class testRodsExec(iRODSTestCase):
 
     def test_execCmd_t(self):
-        condInput = keyValPair_t()
-        tmp = create_execCmd_t("cmd", "cmdArgv", "execAddr", "hintPath", 12, 
-                               12, condInput)
-        self.assertEqual(tmp.cmd, "cmd")
-        self.assertEqual(tmp.cmdArgv, "cmdArgv")
-        self.assertEqual(tmp.execAddr, "execAddr")
-        self.assertEqual(tmp.hintPath, "hintPath")
-        self.assertEqual(tmp.addPathToArgv, 12)
-        self.assertEqual(tmp.dummy, 12)
-        #self.assertEqual(tmp.condInput, condInput)
+        v1 = create_execCmd_t()
+        v2 = create_execCmd_t()
+        self.assertTrue(test_execCmd_t(v1, v2))
 
     def test_execCmdOut_t(self):
-        tmp = create_execCmdOut_t("stdoutBuf", "stderrBuf", 12)
-        #self.assertEqual(tmp.stdoutBuf.getBuf(), "stdoutBuf")
-        #self.assertEqual(tmp.stderrBuf.getBuf(), "stderrBuf")
-        self.assertEqual(tmp.status, 12)
+        v1 = create_execCmdOut_t()
+        v2 = create_execCmdOut_t()
+        self.assertTrue(test_execCmdOut_t(v1, v2))
 
     def test_execMyRuleInp_t(self):
-        addr = rodsHostAddr_t()
-        condInput = keyValPair_t()
-        inpParamArray = msParamArray_t()
-        tmp = create_execMyRuleInp_t("myRule", addr, condInput, "outParamDesc", 
-                                     inpParamArray)
-        self.assertEqual(tmp.myRule, "myRule")
-        #self.assertEqual(tmp.addr, addr)
-        #self.assertEqual(tmp.condInput, condInput)
-        self.assertEqual(tmp.outParamDesc, "outParamDesc")
-        #self.assertEqual(tmp.inpParamArray, inpParamArray)
+        v1 = create_execMyRuleInp_t()
+        v2 = create_execMyRuleInp_t()
+        self.assertTrue(test_execMyRuleInp_t(v1, v2))
 
     def test_ruleExecDelInp_t(self):
-        tmp = create_ruleExecDelInp_t("ruleExecId")
-        self.assertEqual(tmp.ruleExecId, "ruleExecId")
+        v1 = create_ruleExecDelInp_t()
+        v2 = create_ruleExecDelInp_t()
+        self.assertTrue(test_ruleExecDelInp_t(v1, v2))
 
     def test_ruleExecModInp_t(self):
-        condInput = keyValPair_t()
-        tmp = create_ruleExecModInp_t("ruleId", condInput)
-        self.assertEqual(tmp.ruleId, "ruleId")
-        #self.assertEqual(tmp.condInput, "condInput")
+        v1 = create_ruleExecModInp_t()
+        v2 = create_ruleExecModInp_t()
+        self.assertTrue(test_ruleExecModInp_t(v1, v2))
 
     def test_ruleExecSubmitInp_t(self):
-        condInput = keyValPair_t()
-        packedReiAndArgBBuf = bytesBuf_t()
-        tmp = create_ruleExecSubmitInp_t("ruleName", "reiFilePath", "userName", 
-                                         "exeAddress", "exeTime", "exeFrequency", 
-                                         "priority", "lastExecTime", "exeStatus", 
-                                         "estimateExeTime", "notificationAddr", 
-                                         condInput, packedReiAndArgBBuf, 
-                                         "ruleExecId")
-        self.assertEqual(tmp.ruleName, "ruleName")
-        self.assertEqual(tmp.reiFilePath, "reiFilePath")
-        self.assertEqual(tmp.userName, "userName")
-        self.assertEqual(tmp.exeAddress, "exeAddress")
-        self.assertEqual(tmp.exeTime, "exeTime")
-        self.assertEqual(tmp.exeFrequency, "exeFrequency")
-        self.assertEqual(tmp.priority, "priority")
-        self.assertEqual(tmp.lastExecTime, "lastExecTime")
-        self.assertEqual(tmp.exeStatus, "exeStatus")
-        self.assertEqual(tmp.estimateExeTime, "estimateExeTime")
-        self.assertEqual(tmp.notificationAddr, "notificationAddr")
-        #self.assertEqual(tmp.condInput, condInput)
-        #self.assertEqual(tmp.packedReiAndArgBBuf, packedReiAndArgBBuf)
-        self.assertEqual(tmp.ruleExecId, "ruleExecId")
+        v1 = create_ruleExecSubmitInp_t()
+        v2 = create_ruleExecSubmitInp_t()
+        self.assertTrue(test_ruleExecSubmitInp_t(v1, v2))
 
 
 def suite():

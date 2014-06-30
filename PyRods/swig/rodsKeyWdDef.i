@@ -17,9 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "rodsKeyWdDef.h"
-%}
 
 /* The following are the keyWord definition for the condInput key/value pair */
 

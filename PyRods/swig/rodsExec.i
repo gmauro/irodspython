@@ -17,13 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "execMyRule.h"
-#include "ruleExecDel.h"
-#include "ruleExecMod.h"
-#include "ruleExecSubmit.h"
-%}
-
 /*****************************************************************************/
 
 typedef struct ExecCmd {
@@ -36,11 +29,30 @@ typedef struct ExecCmd {
     keyValPair_t condInput;
 } execCmd_t;
 
+%extend ExecCmd {
+    ~ExecCmd() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct ExecCmdOut {
     bytesBuf_t stdoutBuf;
     bytesBuf_t stderrBuf;
     int status;
 } execCmdOut_t;
+
+%extend ExecCmdOut {
+    ~ExecCmdOut() {
+        if ($self) {
+            clear_BytesBuf(&$self->stdoutBuf);
+            clear_BytesBuf(&$self->stderrBuf);
+            free($self);
+        }
+    }
+}
 
 typedef struct ExecMyRuleInp {
     char myRule[META_STR_LEN];
@@ -50,6 +62,16 @@ typedef struct ExecMyRuleInp {
     msParamArray_t *inpParamArray;
 } execMyRuleInp_t;
 
+%extend ExecMyRuleInp {
+    ~ExecMyRuleInp() {
+        if ($self) {
+            delete_MsParamArray($self->inpParamArray);
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 typedef struct {
     char ruleExecId[NAME_LEN];  
 } ruleExecDelInp_t;
@@ -58,6 +80,16 @@ typedef struct {
    char ruleId[NAME_LEN];
    keyValPair_t condInput;
 } ruleExecModInp_t;
+
+
+%extend ruleExecModInp_t {
+    ~ruleExecModInp_t() {
+        if ($self) {
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
 
 typedef struct {
     char ruleName[META_STR_LEN];
@@ -75,6 +107,17 @@ typedef struct {
     bytesBuf_t *packedReiAndArgBBuf;
     char ruleExecId[NAME_LEN];
 } ruleExecSubmitInp_t;
+
+%extend ruleExecSubmitInp_t {
+    ~ruleExecSubmitInp_t() {
+        if ($self) {
+            delete_BytesBuf($self->packedReiAndArgBBuf);
+            clearKeyVal(&$self->condInput);
+            free($self);
+        }
+    }
+}
+
 
 /*****************************************************************************/
 

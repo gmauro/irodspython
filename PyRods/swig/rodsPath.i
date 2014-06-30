@@ -17,9 +17,6 @@
  * Author       : Jerome Fuselier
  */
 
-%{
-#include "rodsPath.h"
-%}
 
 /*****************************************************************************/
 
@@ -35,6 +32,16 @@ typedef struct RodsPath {
     rodsObjStat_t *rodsObjStat;
 } rodsPath_t;
 
+%extend RodsPath {
+    
+    ~RodsPath() {
+        if ($self) {
+            delete_rodsObjStat($self->rodsObjStat);
+            free($self);
+        }
+    }
+}
+
 typedef struct RodsPathInp {
     int numSrc;
     rodsPath_t *srcPath;
@@ -43,7 +50,17 @@ typedef struct RodsPathInp {
     int resolved;
 } rodsPathInp_t;
 
-%extend rodsPathInp_t {
+%extend RodsPathInp {
+    
+    ~RodsPathInp() {
+        if ($self) {
+            delete_RodsPath($self->srcPath);
+            delete_RodsPath($self->destPath);
+            delete_RodsPath($self->targPath);
+            free($self);
+        }
+    }
+    
     rodsPath_t * getSrcPath(int n) {
         if ( (n >= 0) && (n < $self->numSrc) )
             return &$self->srcPath[n];

@@ -26,7 +26,25 @@ typedef struct MsParam {
     bytesBuf_t *inpOutBuf;
 } msParam_t;
 
-%extend msParam_t {
+%extend MsParam {
+
+    ~MsParam() {
+        if ($self) {
+//        	clearMsParam($self, 1);
+        	if ($self->type) {
+        		if ( !strcmp($self->type, DOUBLE_MS_T) ||
+        		     !strcmp($self->type, INT_MS_T) ||
+        		     !strcmp($self->type, STR_MS_T) ) {
+        			free($self->inOutStruct);
+            		delete_BytesBuf($self->inpOutBuf);
+            	}     
+        	} 
+            free($self->label);
+            free($self->type);
+            free($self);
+        }
+    }
+    
 
     execCmdOut_t * getInOutAsExecCmdOut() {
         return (execCmdOut_t *) $self->inOutStruct;
@@ -61,7 +79,17 @@ typedef struct MsParamArray {
 } msParamArray_t;
 
 
-%extend msParamArray_t {
+%extend MsParamArray {
+
+    ~MsParamArray() {
+        if ($self) {
+            for(int i = 0 ; i < $self->len ; i++) {
+                delete_MsParam($self->msParam[i]);
+            }
+            free($self->msParam);
+            free($self);
+        }
+    }
 
     msParam_t * getMsParam(int n) {
         if ( (n >=0) && (n < $self->len) )
@@ -69,6 +97,25 @@ typedef struct MsParamArray {
         else
             return NULL;
     }
+    
+    int addIntParam(char * label, int inpInt) {
+    	return addIntParamToArray($self, label, inpInt);
+    }
+
+	int addDoubleParam(char * label, double inpDouble) {
+    	double *myDouble = (double *)malloc (sizeof (double));
+    	*myDouble = inpDouble;
+    	return addMsParamToArray($self, label, (char *) DOUBLE_MS_T, 
+              		             myDouble, NULL, 0);
+    }
+    
+	int addCharParam(char * label, char * inpChar) {
+    	return addMsParamToArray($self, label, (char *) STR_MS_T, 
+              		             inpChar, NULL, 0);
+    }
+
+    
+
 
 }
 
@@ -81,8 +128,8 @@ char *type, void *inOutStruct, bytesBuf_t *inpOutBuf, int replFlag);
 
 int addCharParamToArray(msParamArray_t *msParamArray, char *label,
                           char *inOutStruct) {
-    return addMsParamToArray(msParamArray, label, (char *) STR_MS_T, 
-                     (void *) strdup ((char *)inOutStruct), NULL, 0);
+       return addMsParamToArray(msParamArray, label, (char *) STR_MS_T, 
+                               inOutStruct, NULL, 0);
 }
 
 int addDoubleParamToArray(msParamArray_t *msParamArray, char *label,
