@@ -71,4 +71,6 @@
   - Improve destructors to fix memory leaks
   - Improve inxValPair, inxIValPair, ...
 
+* 3.3.6:
+  - Fix a bug in irodsFile.getReplications()
 
