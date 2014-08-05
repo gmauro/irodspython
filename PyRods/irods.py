@@ -6172,8 +6172,8 @@ class irodsFile:
             if resc_name == self.resourceName:
                 res.append(self)
             else:
-                f = _irodsOpen(self._conn, self.collName, self.dataName, 
-                               "r+", resc_name)
+                res.append(_irodsOpen(self._conn, self.collName, self.dataName,
+                               "r+", resc_name))
         return res
 
     def getReplNumber(self):
